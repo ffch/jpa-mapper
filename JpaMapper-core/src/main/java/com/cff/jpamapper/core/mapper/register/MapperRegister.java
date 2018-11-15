@@ -6,9 +6,8 @@ import java.util.List;
 import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.mapper.builder.JpaMapperAnnotationBuilder;
-import com.cff.jpamapper.core.method.MethodType;
 
-public class MapperRegister implements MethodType {
+public class MapperRegister{
 	private Class<?> mapper;
 	private List<Method> registerMethod = new ArrayList<>();
 	private Configuration configuration;

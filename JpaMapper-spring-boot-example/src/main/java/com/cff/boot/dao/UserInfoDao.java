@@ -10,7 +10,7 @@ import com.cff.boot.domain.UserInfo;
 import com.cff.jpamapper.core.mapper.CrudMapper;
 
 @Mapper
-public interface UserInfoDao extends CrudMapper<UserInfo> {
+public interface UserInfoDao extends CrudMapper<UserInfo, String> {
 	@Select({
 		"select * from user_info"
 	})

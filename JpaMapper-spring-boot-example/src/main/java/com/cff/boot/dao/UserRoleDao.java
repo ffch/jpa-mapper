@@ -8,6 +8,6 @@ import com.cff.boot.domain.UserRole;
 import com.cff.jpamapper.core.mapper.CrudMapper;
 
 @Mapper
-public interface UserRoleDao extends CrudMapper<UserRole> {
+public interface UserRoleDao extends CrudMapper<UserRole, Integer> {
 	
 }
