@@ -72,6 +72,7 @@
 
 	<modules>
 		<module>JpaMapper-spring-boot</module>
-    <module>JpaMapper-core</module>
+    	<module>JpaMapper-core</module>
+    	<module>JpaMapper-spring-boot-example</module>
   </modules>
 </project>
