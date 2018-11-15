@@ -28,8 +28,6 @@ public class MappedStatementRegister {
 		}
 	}
 
-	
-
 	public Configuration getConfiguration() {
 		return configuration;
 	}

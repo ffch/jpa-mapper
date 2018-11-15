@@ -10,9 +10,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 
+import com.cff.jpamapper.core.MapperScanner;
 import com.cff.jpamapper.core.mapper.register.MappedStatementRegister;
 import com.cff.jpamapper.core.mapper.register.MapperRegister;
-import com.cff.jpamapper.core.mapper.register.MapperScanner;
 
 import javax.annotation.PostConstruct;
 
