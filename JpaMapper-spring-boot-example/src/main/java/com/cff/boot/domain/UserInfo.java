@@ -77,4 +77,9 @@ public class UserInfo implements Serializable {
 		this.valid = valid;
 	}
 
+	@Override
+	public String toString() {
+		return "UserInfo [userName=" + userName + ", mobile=" + mobile + ", name=" + name + ", passwd=" + passwd
+				+ ", valid=" + valid + "]";
+	}
 }

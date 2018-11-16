@@ -3,6 +3,8 @@ package com.cff.jpamapper.core.mapper;
 import java.io.Serializable;
 import java.util.Collection;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface CrudMapper<T, ID extends Serializable>{
 	
 	/**
@@ -12,7 +14,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entity
 	 * @return the saved entity
 	 */
-	<S extends T> int save(S entity);
+	<S extends T> int save(@Param("object") S entity);
 
 	/**
 	 * Saves all given entities. no id save 
@@ -22,7 +24,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	<S extends T> int saveAll(Collection<S> entities);
+	<S extends T> int saveAll(@Param("list") Collection<S> entities);
 	
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -31,7 +33,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entity
 	 * @return the saved entity
 	 */
-	<S extends T> int update(S entity);
+	<S extends T> int update(@Param("object") S entity);
 	
 	/**
 	 * update all given entities.
@@ -40,7 +42,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	<S extends T> int updateAll(S entity, Collection<ID> ids);
+	<S extends T> int updateAll(@Param("object") S entity, @Param("list") Collection<ID> ids);
 
 	/**
 	 * Retrieves an entity by its id.
@@ -49,7 +51,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return the entity with the given id or {@literal null} if none found
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}
 	 */
-	T findOne(ID id);
+	T findOne(@Param("id") ID id);
 
 	/**
 	 * Returns whether an entity with the given id exists.
@@ -58,7 +60,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return true if an entity with the given id exists, {@literal false} otherwise
 	 * @throws IllegalArgumentException if {@code id} is {@literal null}
 	 */
-	boolean exists(ID id);
+	boolean exists(@Param("id") ID id);
 
 	/**
 	 * Returns all instances of the type.
@@ -73,7 +75,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param ids
 	 * @return
 	 */
-	Collection<T> findBatch(Collection<ID> ids);
+	Collection<T> findBatch(@Param("list") Collection<ID> ids);
 
 	/**
 	 * Returns the number of entities available.
@@ -88,7 +90,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param id must not be {@literal null}.
 	 * @throws IllegalArgumentException in case the given {@code id} is {@literal null}
 	 */
-	void delete(ID id);
+	int delete(@Param("id") ID id);
 
 	/**
 	 * Deletes a given entity.
@@ -96,7 +98,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entity
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	void deleteEntity(T entity);
+	int deleteEntity(@Param("object") T entity);
 
 	/**
 	 * Deletes the given entities.
@@ -104,10 +106,10 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entities
 	 * @throws IllegalArgumentException in case the given {@link Iterable} is {@literal null}.
 	 */
-	void deleteBatch(Collection<ID> ids);
+	int deleteBatch(@Param("list") Collection<ID> ids);
 
 	/**
 	 * Deletes all entities managed by the repository.
 	 */
-	void deleteAll();
+	int deleteAll();
 }

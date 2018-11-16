@@ -94,7 +94,7 @@ public class JpaMapperSqlHelper {
 			}
 
 			sql.append(fieldDeclaredName);
-			sql.append(" = #{arg0}");
+			sql.append(" = #{id}");
 		}
 		if (count > 1)
 			throw new IllegalStateException("id只能为一个");
@@ -169,11 +169,11 @@ public class JpaMapperSqlHelper {
 				if (id == null)
 					continue;
 			}
-			sql.append(" <if test='arg0.");
+			sql.append(" <if test='object.");
 			sql.append(fieldName);
 			sql.append("!= null'> and ");
 			sql.append(fieldDeclaredName);
-			sql.append(" = #{arg0.");
+			sql.append(" = #{object.");
 			sql.append(fieldName);
 			sql.append("} </if> ");
 		}
@@ -282,18 +282,17 @@ public class JpaMapperSqlHelper {
 	public static String setSql(Class<?> entity) {
 		Field fields[] = entity.getDeclaredFields();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" set ");
-
+		sql.append("<trim prefix=\" set \" suffix=\" where \" suffixOverrides=\",\">");
 		String idName = null;
 		String idFieldName = null;
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		for (Field field  : fields) {
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
 			Id id = field.getAnnotation(Id.class);
 			if (id != null) {
 				idName = fieldName;
 				idFieldName = fieldDeclaredName;
+				continue;
 			}
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			if (columnAnnotation != null) {
@@ -305,27 +304,23 @@ public class JpaMapperSqlHelper {
 				continue;
 			}
 
-			sql.append(" <if test='arg0.");
+			sql.append(" <if test='object.");
 			sql.append(fieldName);
 			sql.append(" != null'> ");
 			sql.append(fieldDeclaredName);
 			sql.append(" = #{");
-			sql.append("arg0");
+			sql.append("object");
 			sql.append(".");
 			sql.append(fieldName);
-			if (i == fields.length - 1) {
-				sql.append("} </if> ");
-			} else {
-				sql.append("}, </if> ");
-			}
+			sql.append("}, </if> ");
 		}
-		sql.append(" where ");
+		sql.append("</trim>");
 		if (StringUtil.isEmpty(idName)) {
 			throw new IllegalStateException("找不到更新的id?");
 		}
 		sql.append(idFieldName);
 		sql.append(" = #{");
-		sql.append("arg0");
+		sql.append("object");
 		sql.append(".");
 		sql.append(idName);
 		sql.append("}");
@@ -335,18 +330,17 @@ public class JpaMapperSqlHelper {
 	public static String setCollectionSql(Class<?> entity) {
 		Field fields[] = entity.getDeclaredFields();
 		StringBuilder sql = new StringBuilder();
-		sql.append(" set ");
-
+		sql.append("<trim prefix=\" set \" suffix=\" where \" suffixOverrides=\",\">");
 		String idName = null;
 		String idFieldName = null;
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		for (Field field  : fields) {
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
 			Id id = field.getAnnotation(Id.class);
 			if (id != null) {
 				idName = fieldName;
 				idFieldName = fieldDeclaredName;
+				continue;
 			}
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			if (columnAnnotation != null) {
@@ -358,24 +352,20 @@ public class JpaMapperSqlHelper {
 				continue;
 			}
 
-			sql.append(" <if test='arg0.");
+			sql.append(" <if test='object.");
 			sql.append(fieldName);
 			sql.append(" != null'> ");
 			sql.append(fieldDeclaredName);
 			sql.append(" = #{");
-			sql.append("arg0");
+			sql.append("object");
 			sql.append(".");
 			sql.append(fieldName);
-			if (i == fields.length - 1) {
-				sql.append("} </if> ");
-			} else {
-				sql.append("}, </if> ");
-			}
+			sql.append("}, </if> ");	
 		}
-		sql.append(" where ");
 		if (StringUtil.isEmpty(idName)) {
 			throw new IllegalStateException("找不到更新的id?");
 		}
+		sql.append("</trim>");
 		sql.append(idFieldName);
 		sql.append(" in ");
 		sql.append(
@@ -388,11 +378,11 @@ public class JpaMapperSqlHelper {
 	public static String valuesSql(Class<?> entity) {
 		Field fields[] = entity.getDeclaredFields();
 		StringBuilder sql = new StringBuilder();
-		sql.append("(");
+		sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
+		
 		StringBuilder valuesSql = new StringBuilder();
-		valuesSql.append("(");
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
+		valuesSql.append("<trim prefix=\" VALUES(\" suffix=\")\" suffixOverrides=\",\">");
+		for (Field field  : fields) {
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
 			Column columnAnnotation = field.getAnnotation(Column.class);
@@ -405,38 +395,26 @@ public class JpaMapperSqlHelper {
 				if (id == null)
 					continue;
 			}
-			sql.append(" <if test='arg0.");
+			sql.append(" <if test='object.");
 			sql.append(fieldName);
 			sql.append(" != null'> ");
 			sql.append(fieldDeclaredName);
 
-			valuesSql.append(" <if test='arg0.");
+			valuesSql.append(" <if test='object.");
 			valuesSql.append(fieldName);
 			valuesSql.append(" != null'> ");
 			valuesSql.append(" #{");
-			valuesSql.append("arg0");
+			valuesSql.append("object");
 			valuesSql.append(".");
 			valuesSql.append(fieldName);
+			sql.append(" , </if> ");
+			valuesSql.append("}, </if> ");		
+		}
+		
+		valuesSql.append("</trim>");
+		sql.append("</trim>");
 
-			if (i == fields.length - 1) {
-				sql.append(" </if> ");
-				valuesSql.append("} </if> ");
-			} else {
-				sql.append(" , </if> ");
-				valuesSql.append("}, </if> ");
-			}
-		}
-		if (sql.toString().endsWith(",")) {
-			sql.deleteCharAt(sql.length() - 1);
-		}
-		if (valuesSql.toString().endsWith(",")) {
-			valuesSql.deleteCharAt(sql.length() - 1);
-		}
-		valuesSql.append(")");
-		sql.append(") values ");
-
-		return sql.append("<foreach collection =\"list\" item=\"item\" index=\"index\" separator=\",\" >")
-				.append(valuesSql).append("</foreach>").toString();
+		return sql.append(valuesSql).toString();
 
 	}
 
@@ -473,7 +451,7 @@ public class JpaMapperSqlHelper {
 
 		}
 		sql.deleteCharAt(sql.length() - 1);
-		valuesSql.deleteCharAt(sql.length() - 1);
+		valuesSql.deleteCharAt(valuesSql.length() - 1);
 		valuesSql.append(")");
 		sql.append(") values ");
 

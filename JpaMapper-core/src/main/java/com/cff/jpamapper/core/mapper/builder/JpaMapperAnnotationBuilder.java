@@ -109,10 +109,10 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				sql = JpaMapperSqlFactory.makeExistsSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_DELETE:
-				sql = JpaMapperSqlFactory.makeDeleteEntitySql(entity, method);
+				sql = JpaMapperSqlFactory.makeDeleteSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_DELETEENTITY:
-				sql = JpaMapperSqlFactory.makeDeleteSql(entity, method);
+				sql = JpaMapperSqlFactory.makeDeleteEntitySql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_DELETEBATCH:
 				sql = JpaMapperSqlFactory.makeDeleteBatchSql(entity, method);
