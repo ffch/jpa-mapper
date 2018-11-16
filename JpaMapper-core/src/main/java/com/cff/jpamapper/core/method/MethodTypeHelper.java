@@ -36,6 +36,7 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("save", JpaMapperSqlType.SQLTYPE_SAVE);
 		mapperTypeMap.put("saveAll", JpaMapperSqlType.SQLTYPE_SAVEALL);
 		
+		mapperTypeMap.put("update", JpaMapperSqlType.SQLTYPE_UPDATE);
 		mapperTypeMap.put("updateAll", JpaMapperSqlType.SQLTYPE_UPDATEALL);
 	}
 

@@ -129,6 +129,9 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 			case JpaMapperSqlType.TYPE_UPDATEALL:
 				sql = JpaMapperSqlFactory.makeUpdateAllSql(entity, method);
 				break;
+			case JpaMapperSqlType.TYPE_UPDATE:
+				sql = JpaMapperSqlFactory.makeUpdateSql(entity, method);
+				break;
 			default:
 				break;
 			}

@@ -6,7 +6,7 @@ import java.util.Collection;
 public interface CrudMapper<T, ID extends Serializable>{
 	
 	/**
-	 * Saves or updates a given entity. Use the returned instance for further operations as the save operation might have changed the
+	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
 	 * entity instance completely.
 	 * 
 	 * @param entity
@@ -22,6 +22,15 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
 	<S extends T> int saveAll(Collection<S> entities);
+	
+	/**
+	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
+	 * entity instance completely.
+	 * 
+	 * @param entity
+	 * @return the saved entity
+	 */
+	<S extends T> int update(S entity);
 	
 	/**
 	 * update all given entities.

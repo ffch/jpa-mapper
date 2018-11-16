@@ -96,19 +96,17 @@ public class JpaMapperSqlFactory {
 	public static String makeSaveSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
-		sql.append("<choose> ");
-		sql.append("<when test='arg0.");
-		sql.append(JpaMapperSqlHelper.getSqlId(entity));
-		sql.append("!=null'> ");
-		sql.append(JpaMapperSqlHelper.updateSql(entity));
-		sql.append(JpaMapperSqlHelper.setSql(entity));
-		sql.append("</when> ");
-		
-		sql.append("<otherwise> ");
 		sql.append(JpaMapperSqlHelper.insertSql(entity));
 		sql.append(JpaMapperSqlHelper.valuesSql(entity));
-		sql.append("</otherwise> ");
-		sql.append("</choose> ");	
+		sql.append(" </script>");
+		return sql.toString().trim();
+	}
+	
+	public static String makeUpdateSql(Class<?> entity, Method method) {
+		final StringBuilder sql = new StringBuilder();
+		sql.append("<script> ");
+		sql.append(JpaMapperSqlHelper.updateSql(entity));
+		sql.append(JpaMapperSqlHelper.setSql(entity));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}

@@ -36,6 +36,7 @@ public class WebRest {
 	@RequestMapping("/save")
 	public void save(){
 		UserInfo userInfo = new UserInfo();
+		
 		userInfoDao.save(userInfo);
 	}
 }

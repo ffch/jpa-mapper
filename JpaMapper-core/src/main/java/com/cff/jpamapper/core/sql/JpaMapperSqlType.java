@@ -11,7 +11,8 @@ public class JpaMapperSqlType {
 	public static final int TYPE_FINDBATCH = 15;
 
 	public static final int TYPE_UPDATEBY = 20;
-	public static final int TYPE_UPDATEALL = 21;
+	public static final int TYPE_UPDATE = 21;
+	public static final int TYPE_UPDATEALL = 22;
 
 	public static final int TYPE_DELETE = 30;
 	public static final int TYPE_DELETEALL = 31;
@@ -33,6 +34,7 @@ public class JpaMapperSqlType {
 
 	public static final JpaMapperSqlType SQLTYPE_IGNORE = new JpaMapperSqlType(SqlCommandType.UNKNOWN, TYPE_IGNORE);
 
+	public static final JpaMapperSqlType SQLTYPE_UPDATE = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_UPDATE);
 	public static final JpaMapperSqlType SQLTYPE_UPDATEALL = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_UPDATEALL);
 	
 	public static final JpaMapperSqlType SQLTYPE_SAVE = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_SAVE);
