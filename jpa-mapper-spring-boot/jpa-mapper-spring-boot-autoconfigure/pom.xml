@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cff</groupId>
-		<artifactId>JpaMapper-spring-boot</artifactId>
+		<artifactId>jpa-mapper-spring-boot</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>JpaMapper-spring-boot-autoconfigure</artifactId>
+	<artifactId>jpa-mapper-spring-boot-autoconfigure</artifactId>
 	<packaging>jar</packaging>
-	<name>JpaMapper-spring-boot-autoconfigure</name>
+	<name>jpa-mapper-spring-boot-autoconfigure</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
 			<groupId>com.cff</groupId>
-			<artifactId>JpaMapper-core</artifactId>
+			<artifactId>jpa-mapper-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

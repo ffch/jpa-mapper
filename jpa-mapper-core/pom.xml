@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cff</groupId>
-		<artifactId>JpaMapper</artifactId>
+		<artifactId>jpa-mapper</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>JpaMapper-core</artifactId>
+	<artifactId>jpa-mapper-core</artifactId>
 	<name>JpaMapper-core</name>
 	<url>http://maven.apache.org</url>
 	<properties>

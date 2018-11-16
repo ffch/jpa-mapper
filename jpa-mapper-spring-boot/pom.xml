@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cff</groupId>
-		<artifactId>JpaMapper</artifactId>
+		<artifactId>jpa-mapper</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>JpaMapper-spring-boot</artifactId>
-	<name>JpaMapper-spring-boot</name>
+	<artifactId>jpa-mapper-spring-boot</artifactId>
+	<name>jpa-mapper-spring-boot</name>
 	<packaging>pom</packaging>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -39,17 +39,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-spring-boot-autoconfigure</artifactId>
+				<artifactId>jpa-mapper-spring-boot-autoconfigure</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-spring-boot-starter</artifactId>
+				<artifactId>jpa-mapper-spring-boot-starter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-core</artifactId>
+				<artifactId>jpa-mapper-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -62,7 +62,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<modules>
-		<module>JpaMapper-spring-boot-starter</module>
-		<module>JpaMapper-spring-boot-autoconfigure</module>
+		<module>jpa-mapper-spring-boot-starter</module>
+		<module>jpa-mapper-spring-boot-autoconfigure</module>
 	</modules>
 </project>

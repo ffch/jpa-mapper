@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.cff</groupId>
-	<artifactId>JpaMapper</artifactId>
+	<artifactId>jpa-mapper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>JpaMapper</name>
+	<name>jpa-mapper</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -46,17 +46,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-spring-boot-autoconfigure</artifactId>
+				<artifactId>jpa-mapper-spring-boot-autoconfigure</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-spring-boot-starter</artifactId>
+				<artifactId>jpa-mapper-spring-boot-starter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.cff</groupId>
-				<artifactId>JpaMapper-core</artifactId>
+				<artifactId>jpa-mapper-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -71,8 +71,8 @@
 	
 
 	<modules>
-		<module>JpaMapper-spring-boot</module>
-    	<module>JpaMapper-core</module>
-    	<module>JpaMapper-spring-boot-example</module>
+		<module>jpa-mapper-spring-boot</module>
+    	<module>jpa-mapper-core</module>
+    	<module>jpa-mapper-spring-boot-example</module>
   </modules>
 </project>
