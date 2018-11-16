@@ -15,20 +15,20 @@ import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperSqlHelper {
 	public static final String CONDITION_AND = "AND|and|And";
-	
-	private static String conditionSelectSql(Class<?> entity, Method method) {
+
+	public static String conditionSelectSql(Class<?> entity, Method method) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("where ");
+		sql.append("where 1=1 ");
 		String name = method.getName();
-		
+
 		String para = name.replaceFirst(MethodTypeHelper.SELECT, "");
 		String params[] = para.split(CONDITION_AND);
-		
+
 		if (params == null || params.length < 1)
 			return null;
 		Field fields[] = entity.getDeclaredFields();
-		
-		Map<String,String> fieldMap = new HashMap<>();
+
+		Map<String, String> fieldMap = new HashMap<>();
 		for (Field field : fields) {
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			String fieldName = field.getName();
@@ -38,48 +38,52 @@ public class JpaMapperSqlHelper {
 					fieldDeclaredName = columnAnnotation.name();
 				}
 			} else {
-				continue;
+				Id id = field.getAnnotation(Id.class);
+				if (id == null)
+					continue;
 			}
-			
+
 			fieldMap.put(fieldName.toLowerCase(), fieldDeclaredName);
 		}
-		
+
 		int index = 0;
 		for (String param : params) {
 			String fieldDeclaredName = fieldMap.get(param.toLowerCase());
-			if(fieldDeclaredName != null){
+			if (fieldDeclaredName != null) {
 				sql.append(" AND ");
 				sql.append(fieldDeclaredName);
 				sql.append(" = #{arg");
 				sql.append(index);
 				sql.append("}");
 			}
-			index ++;
+			index++;
 		}
-		
-		
+
 		return sql.toString();
 	}
-	
+
 	/**
 	 * 单id条件
+	 * 
 	 * @param entity
 	 * @param method
 	 * @return
 	 */
-	private static String conditionIdSql(Class<?> entity, Method method) {
+	public static String conditionIdSql(Class<?> entity, Method method) {
 		int count = method.getParameterCount();
-		if(count != 1)return null;
-				
+		if (count != 1)
+			return null;
+
 		StringBuilder sql = new StringBuilder();
 		sql.append("where ");
-		
+
 		Field fields[] = entity.getDeclaredFields();
 		count = 0;
 		for (Field field : fields) {
 			Id id = field.getAnnotation(Id.class);
-			if(id == null)continue;
-			count ++;
+			if (id == null)
+				continue;
+			count++;
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
@@ -92,29 +96,33 @@ public class JpaMapperSqlHelper {
 			sql.append(fieldDeclaredName);
 			sql.append(" = #{arg0}");
 		}
-		if(count > 1)throw new IllegalStateException("id只能为一个");
+		if (count > 1)
+			throw new IllegalStateException("id只能为一个");
 		return sql.toString();
 	}
-	
+
 	/**
 	 * 多id用
+	 * 
 	 * @param entity
 	 * @param method
 	 * @return
 	 */
-	private static String conditionIdsSql(Class<?> entity, Method method) {
+	public static String conditionIdsSql(Class<?> entity, Method method) {
 		int count = method.getParameterCount();
-		if(count != 1)return null;
-				
+		if (count != 1)
+			return null;
+
 		StringBuilder sql = new StringBuilder();
 		sql.append("where ");
-		
+
 		Field fields[] = entity.getDeclaredFields();
 		count = 0;
 		for (Field field : fields) {
 			Id id = field.getAnnotation(Id.class);
-			if(id == null)continue;
-			count ++;
+			if (id == null)
+				continue;
+			count++;
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
@@ -125,19 +133,60 @@ public class JpaMapperSqlHelper {
 			}
 
 			sql.append(fieldDeclaredName);
-			sql.append(" = #{arg0}");
 		}
-		if(count > 1)throw new IllegalStateException("id只能为一个");
+
+		if (count > 1)
+			throw new IllegalStateException("id只能为一个");
+		sql.append(" in ");
+		sql.append(
+				"<foreach collection =\"list\" item=\"item\" index=\"index\" separator=\",\" open=\"(\" close=\")\"> ");
+		sql.append(" #{item} ");
+		sql.append(" </foreach> ");
+
+		return sql.toString();
+	}
+
+	/**
+	 * 获取实体的where语句，只获取Column注解的字段
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public static String conditionEntitySql(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		StringBuilder sql = new StringBuilder();
+		sql.append("where 1=1 ");
+		for (Field field : fields) {
+			String fieldName = field.getName();
+			String fieldDeclaredName = fieldName;
+			Column columnAnnotation = field.getAnnotation(Column.class);
+			if (columnAnnotation != null) {
+				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
+					fieldDeclaredName = columnAnnotation.name();
+				}
+			} else {
+				Id id = field.getAnnotation(Id.class);
+				if (id == null)
+					continue;
+			}
+			sql.append(" <if test='arg0.");
+			sql.append(fieldName);
+			sql.append("!= null'> and ");
+			sql.append(fieldDeclaredName);
+			sql.append(" = #{arg0.");
+			sql.append(fieldName);
+			sql.append("} </if> ");
+		}
 		return sql.toString();
 	}
 
 	/**
 	 * 获取实体的select语句，只获取Column注解的字段
 	 * 
-	 * @param mapper
+	 * @param entity
 	 * @return
 	 */
-	private static String selectEntitySql(Class<?> entity) {
+	public static String selectEntitySql(Class<?> entity) {
 		Field fields[] = entity.getDeclaredFields();
 		StringBuilder sql = new StringBuilder();
 		sql.append("select ");
@@ -150,7 +199,9 @@ public class JpaMapperSqlHelper {
 					fieldDeclaredName = columnAnnotation.name();
 				}
 			} else {
-				continue;
+				Id id = field.getAnnotation(Id.class);
+				if (id == null)
+					continue;
 			}
 			sql.append(fieldDeclaredName);
 			sql.append(" ");
@@ -166,7 +217,7 @@ public class JpaMapperSqlHelper {
 	 * 
 	 * @return
 	 */
-	private static String selectCountSql() {
+	public static String selectCountSql() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select count(1) ");
 
@@ -178,14 +229,14 @@ public class JpaMapperSqlHelper {
 	 * 
 	 * @return
 	 */
-	private static String selectExistSql() {
+	public static String selectExistSql() {
 		StringBuilder sql = new StringBuilder();
 		sql.append("select count(1) ");
 
 		return sql.toString();
 	}
 
-	private static String fromSql(Class<?> mapper) {
+	public static String fromSql(Class<?> mapper) {
 		Table tableAnnotation = mapper.getAnnotation(Table.class);
 		if (tableAnnotation == null)
 			return null;
@@ -193,61 +244,255 @@ public class JpaMapperSqlHelper {
 		return " from " + table + " ";
 	}
 
-	public static String makeUpdateSql(Class<?> entity, Method method) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * 删除的sql语句
+	 * 
+	 * @return
+	 */
+	public static String deleteSql() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("delete ");
+
+		return sql.toString();
 	}
 
-	public static String makeDeleteSql(Class<?> entity, Method method) {
-		// TODO Auto-generated method stub
-		return null;
+	public static String updateSql(Class<?> mapper) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE ");
+		Table tableAnnotation = mapper.getAnnotation(Table.class);
+		if (tableAnnotation == null)
+			return null;
+		String table = tableAnnotation.name();
+		sql.append(table);
+
+		return sql.toString();
 	}
 
-	public static String makeInsertSql(Class<?> entity, Method method) {
-		// TODO Auto-generated method stub
-		return null;
+	public static String insertSql(Class<?> mapper) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO ");
+		Table tableAnnotation = mapper.getAnnotation(Table.class);
+		if (tableAnnotation == null)
+			return null;
+		String table = tableAnnotation.name();
+		sql.append(table);
+		return sql.toString();
 	}
 
-	public static String makeSelectOneSql(Class<?> entity, Method method) {
-		final StringBuilder sql = new StringBuilder();
-		sql.append(selectEntitySql(entity));
-		sql.append(fromSql(entity));
-		sql.append(conditionIdSql(entity, method));
-		return sql.toString().trim();
-	}
+	public static String setSql(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" set ");
 
-	public static String makeSelectAllSql(Class<?> entity, Method method) {
-		final StringBuilder sql = new StringBuilder();
-		sql.append(selectEntitySql(entity));
-		sql.append(fromSql(entity));
-		if(method.getParameterCount() > 0){
-			sql.append(conditionIdsSql(entity, method));
+		String idName = null;
+		String idFieldName = null;
+		for (int i = 0; i < fields.length; i++) {
+			Field field = fields[i];
+			String fieldName = field.getName();
+			String fieldDeclaredName = fieldName;
+			Id id = field.getAnnotation(Id.class);
+			if (id != null) {
+				idName = fieldName;
+				idFieldName = fieldDeclaredName;
+			}
+			Column columnAnnotation = field.getAnnotation(Column.class);
+			if (columnAnnotation != null) {
+				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
+					fieldDeclaredName = columnAnnotation.name();
+					idFieldName = fieldDeclaredName;
+				}
+			} else {
+				continue;
+			}
+
+			sql.append(" <if test='arg0.");
+			sql.append(fieldName);
+			sql.append(" != null'> ");
+			sql.append(fieldDeclaredName);
+			sql.append(" = #{");
+			sql.append("arg0");
+			sql.append(".");
+			sql.append(fieldName);
+			if (i == fields.length - 1) {
+				sql.append("} </if> ");
+			} else {
+				sql.append("}, </if> ");
+			}
 		}
-		return sql.toString().trim();
+		sql.append(" where ");
+		if (StringUtil.isEmpty(idName)) {
+			throw new IllegalStateException("找不到更新的id?");
+		}
+		sql.append(idFieldName);
+		sql.append(" = #{");
+		sql.append("arg0");
+		sql.append(".");
+		sql.append(idName);
+		sql.append("}");
+		return sql.toString();
 	}
 	
-	public static String makeSelectBySql(Class<?> entity, Method method) {
-		final StringBuilder sql = new StringBuilder();
-		sql.append(selectEntitySql(entity));
-		sql.append(fromSql(entity));
-		sql.append(conditionSelectSql(entity, method));
+	public static String setCollectionSql(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" set ");
 
-		return sql.toString().trim();
+		String idName = null;
+		String idFieldName = null;
+		for (int i = 0; i < fields.length; i++) {
+			Field field = fields[i];
+			String fieldName = field.getName();
+			String fieldDeclaredName = fieldName;
+			Id id = field.getAnnotation(Id.class);
+			if (id != null) {
+				idName = fieldName;
+				idFieldName = fieldDeclaredName;
+			}
+			Column columnAnnotation = field.getAnnotation(Column.class);
+			if (columnAnnotation != null) {
+				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
+					fieldDeclaredName = columnAnnotation.name();
+					idFieldName = fieldDeclaredName;
+				}
+			} else {
+				continue;
+			}
+
+			sql.append(" <if test='arg0.");
+			sql.append(fieldName);
+			sql.append(" != null'> ");
+			sql.append(fieldDeclaredName);
+			sql.append(" = #{");
+			sql.append("arg0");
+			sql.append(".");
+			sql.append(fieldName);
+			if (i == fields.length - 1) {
+				sql.append("} </if> ");
+			} else {
+				sql.append("}, </if> ");
+			}
+		}
+		sql.append(" where ");
+		if (StringUtil.isEmpty(idName)) {
+			throw new IllegalStateException("找不到更新的id?");
+		}
+		sql.append(idFieldName);
+		sql.append(" in ");
+		sql.append(
+				"<foreach collection =\"list\" item=\"item\" index=\"index\" separator=\",\" open=\"(\" close=\")\"> ");
+		sql.append(" #{item} ");
+		sql.append(" </foreach> ");
+		return sql.toString();
 	}
 
-	public static String makeCountSql(Class<?> entity, Method method) {
-		final StringBuilder sql = new StringBuilder();
-		sql.append(selectCountSql());
-		sql.append(fromSql(entity));
+	public static String valuesSql(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		StringBuilder sql = new StringBuilder();
+		sql.append("(");
+		StringBuilder valuesSql = new StringBuilder();
+		valuesSql.append("(");
+		for (int i = 0; i < fields.length; i++) {
+			Field field = fields[i];
+			String fieldName = field.getName();
+			String fieldDeclaredName = fieldName;
+			Column columnAnnotation = field.getAnnotation(Column.class);
+			if (columnAnnotation != null) {
+				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
+					fieldDeclaredName = columnAnnotation.name();
+				}
+			} else {
+				continue;
+			}
+			sql.append(" <if test='arg0.");
+			sql.append(fieldName);
+			sql.append(" != null'> ");
+			sql.append(fieldDeclaredName);
 
-		return sql.toString().trim();
+			valuesSql.append(" <if test='arg0.");
+			valuesSql.append(fieldName);
+			valuesSql.append(" != null'> ");
+			valuesSql.append(" #{");
+			valuesSql.append("arg0");
+			valuesSql.append(".");
+			valuesSql.append(fieldName);
+
+			if (i == fields.length - 1) {
+				sql.append(" </if> ");
+				valuesSql.append("} </if> ");
+			} else {
+				sql.append(" , </if> ");
+				valuesSql.append("}, </if> ");
+			}
+		}
+		if (sql.toString().endsWith(",")) {
+			sql.deleteCharAt(sql.length() - 1);
+		}
+		if (valuesSql.toString().endsWith(",")) {
+			valuesSql.deleteCharAt(sql.length() - 1);
+		}
+		valuesSql.append(")");
+		sql.append(") values ");
+
+		return sql.append("<foreach collection =\"list\" item=\"item\" index=\"index\" separator=\",\" >")
+				.append(valuesSql).append("</foreach>").toString();
+
 	}
 
-	public static String makeExistsSql(Class<?> entity, Method method) {
-		final StringBuilder sql = new StringBuilder();
-		sql.append(selectExistSql());
-		sql.append(fromSql(entity));
-		sql.append(conditionIdSql(entity, method));
-		return sql.toString().trim();
+	public static String valuesCollectionSql(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		StringBuilder sql = new StringBuilder();
+		sql.append("(");
+		StringBuilder valuesSql = new StringBuilder();
+		String entityParam = "item";
+
+		valuesSql.append("(");
+		for (Field field : fields) {
+			String fieldName = field.getName();
+			String fieldDeclaredName = fieldName;
+			Column columnAnnotation = field.getAnnotation(Column.class);
+			if (columnAnnotation != null) {
+				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
+					fieldDeclaredName = columnAnnotation.name();
+				}
+			} else {
+				continue;
+			}
+			sql.append(fieldDeclaredName);
+			sql.append(",");
+			valuesSql.append("#{");
+			valuesSql.append(entityParam);
+			valuesSql.append(".");
+			valuesSql.append(fieldName);
+			valuesSql.append("},");
+
+		}
+		sql.deleteCharAt(sql.length() - 1);
+		valuesSql.deleteCharAt(sql.length() - 1);
+		valuesSql.append(")");
+		sql.append(") values ");
+
+		return sql.append("<foreach collection =\"list\" item=\"item\" index=\"index\" separator=\",\" >")
+				.append(valuesSql).append("</foreach>").toString();
+
 	}
+
+	/**
+	 * id字段名
+	 * 
+	 * @param entity
+	 * @param method
+	 * @return
+	 */
+	public static String getSqlId(Class<?> entity) {
+		Field fields[] = entity.getDeclaredFields();
+		for (Field field : fields) {
+			Id id = field.getAnnotation(Id.class);
+			if (id == null)
+				continue;
+			String fieldName = field.getName();
+			return fieldName;
+		}
+		return null;
+	}
+
 }

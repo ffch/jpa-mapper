@@ -1,5 +1,6 @@
 package com.cff.boot.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,20 @@ public class WebRest {
 	
 	@RequestMapping("/all")
 	public List<UserInfo> all(){
-		return userInfoDao.findAll();
+		return (List<UserInfo>) userInfoDao.findAll();
+	}
+	
+	@RequestMapping("/batch")
+	public List<UserInfo> batch(){
+		List<String> userNames = new ArrayList<>();
+		userNames.add("admin");
+		userNames.add("cff");
+		return (List<UserInfo>) userInfoDao.findBatch(userNames);
+	}
+	
+	@RequestMapping("/save")
+	public void save(){
+		UserInfo userInfo = new UserInfo();
+		userInfoDao.save(userInfo);
 	}
 }

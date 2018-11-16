@@ -25,16 +25,22 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findOne", JpaMapperSqlType.SQLTYPE_FINDONE);
 		mapperTypeMap.put("exists", JpaMapperSqlType.SQLTYPE_EXISTS);
 		mapperTypeMap.put("findAll", JpaMapperSqlType.SQLTYPE_FINDALL);
+		mapperTypeMap.put("findBatch", JpaMapperSqlType.SQLTYPE_FINDBATCH);
 		mapperTypeMap.put("count", JpaMapperSqlType.SQLTYPE_COUNT);
 
 		mapperTypeMap.put("delete", JpaMapperSqlType.SQLTYPE_DELETE);
+		mapperTypeMap.put("deleteBatch", JpaMapperSqlType.SQLTYPE_DELETEBATCH);
+		mapperTypeMap.put("deleteEntity", JpaMapperSqlType.SQLTYPE_DELETEENTITY);
 		mapperTypeMap.put("deleteAll", JpaMapperSqlType.SQLTYPE_DELETEALL);
 
 		mapperTypeMap.put("save", JpaMapperSqlType.SQLTYPE_SAVE);
+		mapperTypeMap.put("saveAll", JpaMapperSqlType.SQLTYPE_SAVEALL);
+		
+		mapperTypeMap.put("updateAll", JpaMapperSqlType.SQLTYPE_UPDATEALL);
 	}
 
 	public static void main(String args[]) {
-		
+
 	}
 
 	public static JpaMapperSqlType getSqlCommandType(Method method) {

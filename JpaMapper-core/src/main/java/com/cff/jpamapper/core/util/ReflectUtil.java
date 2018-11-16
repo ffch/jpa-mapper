@@ -1,11 +1,14 @@
 package com.cff.jpamapper.core.util;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 
 public class ReflectUtil {
 
 	/**
 	 * 判断是不是基础类
+	 * 
 	 * @param type
 	 * @return
 	 */
@@ -24,6 +27,16 @@ public class ReflectUtil {
 	 */
 	public static boolean isCollection(Class<?> type) {
 		return Collection.class.isAssignableFrom(type);
+	}
+	
+	/**
+	 * 判断是不是Iterable的实现类
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public static boolean isIterable(Class<?> type) {
+		return Iterable.class.isAssignableFrom(type);
 	}
 
 	/**
@@ -44,4 +57,21 @@ public class ReflectUtil {
 		return isBaseClass;
 	}
 
+	public static Class<?> getFirstParameterType(Method method) {
+		Class<?> type[] = method.getParameterTypes();
+		if (type == null || type.length < 1)
+			return null;
+		return type[0];
+	}
+	
+	/**
+	 * 检测类型是否相符
+	 * @param src 子类
+	 * @param dst 父类
+	 * @return true类型相符
+	 */
+	public static boolean checkTypeFit(Class<?> src, Class<?> dst){
+		if(dst.isAssignableFrom(src))return true;
+		return false;
+	}
 }

@@ -19,7 +19,7 @@ public class MapperRegister{
 	}
 
 	private void scanMappers() {
-		Method[] methods = mapper.getDeclaredMethods();
+		Method[] methods = mapper.getMethods();
 		for (Method method : methods) {
 			if (method.getAnnotations() == null || method.getAnnotations().length < 1) {
 				registerMethod.add(method);

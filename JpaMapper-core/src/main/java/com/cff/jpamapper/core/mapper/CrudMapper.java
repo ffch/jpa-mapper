@@ -1,17 +1,18 @@
 package com.cff.jpamapper.core.mapper;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 public interface CrudMapper<T, ID extends Serializable>{
 	
 	/**
-	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
+	 * Saves or updates a given entity. Use the returned instance for further operations as the save operation might have changed the
 	 * entity instance completely.
 	 * 
 	 * @param entity
 	 * @return the saved entity
 	 */
-	<S extends T> S save(S entity);
+	<S extends T> int save(S entity);
 
 	/**
 	 * Saves all given entities.
@@ -20,7 +21,16 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	<S extends T> Iterable<S> save(Iterable<S> entities);
+	<S extends T> int saveAll(Collection<S> entities);
+	
+	/**
+	 * update all given entities.
+	 * 
+	 * @param entities
+	 * @return the saved entities
+	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
+	 */
+	<S extends T> int updateAll(S entity, Collection<ID> ids);
 
 	/**
 	 * Retrieves an entity by its id.
@@ -45,7 +55,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * 
 	 * @return all entities
 	 */
-	Iterable<T> findAll();
+	Collection<T> findAll();
 
 	/**
 	 * Returns all instances of the type with the given IDs.
@@ -53,7 +63,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param ids
 	 * @return
 	 */
-	Iterable<T> findAll(Iterable<ID> ids);
+	Collection<T> findBatch(Collection<ID> ids);
 
 	/**
 	 * Returns the number of entities available.
@@ -76,7 +86,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entity
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	void delete(T entity);
+	void deleteEntity(T entity);
 
 	/**
 	 * Deletes the given entities.
@@ -84,7 +94,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entities
 	 * @throws IllegalArgumentException in case the given {@link Iterable} is {@literal null}.
 	 */
-	void delete(Iterable<? extends T> entities);
+	void deleteBatch(Collection<ID> ids);
 
 	/**
 	 * Deletes all entities managed by the repository.

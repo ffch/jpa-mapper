@@ -1,12 +1,8 @@
 package com.cff.jpamapper.core.mapper.builder;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
-import javax.persistence.Column;
-import javax.persistence.Table;
 
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -21,7 +17,7 @@ import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
-import com.cff.jpamapper.core.sql.JpaMapperSqlHelper;
+import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
 import com.cff.jpamapper.core.sql.JpaMapperSqlType;
 import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
@@ -95,19 +91,43 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 			String sql = null;
 			switch (sqlCommandType.getType()) {
 			case JpaMapperSqlType.TYPE_FINDONE:
-				sql = JpaMapperSqlHelper.makeSelectOneSql(entity, method);
+				sql = JpaMapperSqlFactory.makeSelectOneSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_FINDALL:
-				sql = JpaMapperSqlHelper.makeSelectAllSql(entity, method);
+				sql = JpaMapperSqlFactory.makeSelectAllSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_FINDBATCH:
+				sql = JpaMapperSqlFactory.makeSelectBatchSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_FINDBY:
-				sql = JpaMapperSqlHelper.makeSelectBySql(entity, method);
+				sql = JpaMapperSqlFactory.makeSelectBySql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_COUNT:
-				sql = JpaMapperSqlHelper.makeCountSql(entity, method);
+				sql = JpaMapperSqlFactory.makeCountSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_EXISTS:
-				sql = JpaMapperSqlHelper.makeExistsSql(entity, method);
+				sql = JpaMapperSqlFactory.makeExistsSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_DELETE:
+				sql = JpaMapperSqlFactory.makeDeleteEntitySql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_DELETEENTITY:
+				sql = JpaMapperSqlFactory.makeDeleteSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_DELETEBATCH:
+				sql = JpaMapperSqlFactory.makeDeleteBatchSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_DELETEALL:
+				sql = JpaMapperSqlFactory.makeDeleteAllSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_SAVE:
+				sql = JpaMapperSqlFactory.makeSaveSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_SAVEALL:
+				sql = JpaMapperSqlFactory.makeSaveSql(entity, method);
+				break;
+			case JpaMapperSqlType.TYPE_UPDATEALL:
+				sql = JpaMapperSqlFactory.makeUpdateAllSql(entity, method);
 				break;
 			default:
 				break;

@@ -11,10 +11,6 @@ import com.cff.jpamapper.core.mapper.CrudMapper;
 
 @Mapper
 public interface UserInfoDao extends CrudMapper<UserInfo, String> {
-	@Select({
-		"select * from user_info"
-	})
-	List<UserInfo> findAll();
 	
 //	@Select({
 //		"select * from user_info where userName = #{answer.isRecommend, jdbcType=VARCHAR} and valid = #{answer.valid, jdbcType=INTEGER}"
