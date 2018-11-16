@@ -36,7 +36,18 @@ public class WebRest {
 	@RequestMapping("/save")
 	public void save(){
 		UserInfo userInfo = new UserInfo();
-		
-		userInfoDao.save(userInfo);
+		userInfo.setUserName("heihei");
+		userInfo.setPasswd("342");
+		userInfo.setMobile("342");
+		System.out.println(userInfoDao.save(userInfo));
+	}
+	
+	@RequestMapping("/update")
+	public void update(){
+		UserInfo userInfo = new UserInfo();
+		userInfo.setUserName("heihei");
+		userInfo.setPasswd("342");
+		userInfo.setMobile("342");
+		System.out.println(userInfoDao.update(userInfo));
 	}
 }

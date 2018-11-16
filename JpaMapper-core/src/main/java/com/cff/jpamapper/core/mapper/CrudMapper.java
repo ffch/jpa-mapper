@@ -15,8 +15,9 @@ public interface CrudMapper<T, ID extends Serializable>{
 	<S extends T> int save(S entity);
 
 	/**
-	 * Saves all given entities.
-	 * 
+	 * Saves all given entities. no id save 
+	 * <p>for single save the {@link save} can detect the id and auto save
+	 * <p>to save Collection with id, define {@link saveAllWithId}
 	 * @param entities
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.

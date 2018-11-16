@@ -124,7 +124,10 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				sql = JpaMapperSqlFactory.makeSaveSql(entity, method);
 				break;
 			case JpaMapperSqlType.TYPE_SAVEALL:
-				sql = JpaMapperSqlFactory.makeSaveSql(entity, method);
+				sql = JpaMapperSqlFactory.makeSaveAllSql(entity, method, false);
+				break;
+			case JpaMapperSqlType.TYPE_SAVEALLWITHID:
+				sql = JpaMapperSqlFactory.makeSaveAllSql(entity, method, true);
 				break;
 			case JpaMapperSqlType.TYPE_UPDATEALL:
 				sql = JpaMapperSqlFactory.makeUpdateAllSql(entity, method);

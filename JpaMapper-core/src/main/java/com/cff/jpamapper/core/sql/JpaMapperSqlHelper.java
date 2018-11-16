@@ -401,7 +401,9 @@ public class JpaMapperSqlHelper {
 					fieldDeclaredName = columnAnnotation.name();
 				}
 			} else {
-				continue;
+				Id id = field.getAnnotation(Id.class);
+				if (id == null)
+					continue;
 			}
 			sql.append(" <if test='arg0.");
 			sql.append(fieldName);
@@ -438,7 +440,7 @@ public class JpaMapperSqlHelper {
 
 	}
 
-	public static String valuesCollectionSql(Class<?> entity) {
+	public static String valuesCollectionSql(Class<?> entity, boolean hasId) {
 		Field fields[] = entity.getDeclaredFields();
 		StringBuilder sql = new StringBuilder();
 		sql.append("(");
@@ -450,6 +452,10 @@ public class JpaMapperSqlHelper {
 			String fieldName = field.getName();
 			String fieldDeclaredName = fieldName;
 			Column columnAnnotation = field.getAnnotation(Column.class);
+			Id id = field.getAnnotation(Id.class);
+			if(id != null && !hasId){
+				continue;
+			}
 			if (columnAnnotation != null) {
 				if (StringUtil.isNotEmpty(columnAnnotation.name())) {
 					fieldDeclaredName = columnAnnotation.name();

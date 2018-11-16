@@ -23,6 +23,7 @@ public class JpaMapperSqlType {
 	public static final int TYPE_SAVE = 40;
 	public static final int TYPE_SAVEALL = 41;
 	public static final int TYPE_SAVEBY = 42;
+	public static final int TYPE_SAVEALLWITHID = 43;
 
 	public static final int TYPE_IGNORE = 99;
 
@@ -39,6 +40,7 @@ public class JpaMapperSqlType {
 	
 	public static final JpaMapperSqlType SQLTYPE_SAVE = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_SAVE);
 	public static final JpaMapperSqlType SQLTYPE_SAVEALL = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_SAVEALL);
+	public static final JpaMapperSqlType SQLTYPE_SAVEALLWITHID = new JpaMapperSqlType(SqlCommandType.INSERT, TYPE_SAVEALLWITHID);
 
 	public static final JpaMapperSqlType SQLTYPE_DELETEALL = new JpaMapperSqlType(SqlCommandType.DELETE, TYPE_DELETEALL);
 	public static final JpaMapperSqlType SQLTYPE_DELETE = new JpaMapperSqlType(SqlCommandType.DELETE, TYPE_DELETE);

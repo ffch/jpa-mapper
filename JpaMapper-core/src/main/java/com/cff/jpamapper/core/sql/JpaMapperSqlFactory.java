@@ -111,11 +111,11 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
-	public static String makeSaveAllSql(Class<?> entity, Method method) {
+	public static String makeSaveAllSql(Class<?> entity, Method method, boolean hasId) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
 		sql.append(JpaMapperSqlHelper.insertSql(entity));
-		sql.append(JpaMapperSqlHelper.valuesCollectionSql(entity));
+		sql.append(JpaMapperSqlHelper.valuesCollectionSql(entity, hasId));
 		sql.append(" </script>");
 		return sql.toString().trim();
 
