@@ -564,7 +564,7 @@ public class MapperAnnotationBuilder {
 		return args == null ? new Arg[0] : args.value();
 	}
 
-	public KeyGenerator handleSelectKeyAnnotation(SelectKey selectKeyAnnotation, String baseStatementId,
+	private KeyGenerator handleSelectKeyAnnotation(SelectKey selectKeyAnnotation, String baseStatementId,
 			Class<?> parameterTypeClass, LanguageDriver languageDriver) {
 		String id = baseStatementId + SelectKeyGenerator.SELECT_KEY_SUFFIX;
 		Class<?> resultTypeClass = selectKeyAnnotation.resultType();

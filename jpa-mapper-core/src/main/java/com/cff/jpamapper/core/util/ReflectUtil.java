@@ -1,6 +1,8 @@
 package com.cff.jpamapper.core.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -73,5 +75,27 @@ public class ReflectUtil {
 	public static boolean checkTypeFit(Class<?> src, Class<?> dst){
 		if(dst.isAssignableFrom(src))return true;
 		return false;
+	}
+	
+	/**
+	 * 获取泛型类型
+	 * @param type
+	 * @return
+	 */
+	public static Class<?> findGenericClass(Class<?> type){
+		Type[] types = type.getGenericInterfaces();
+		Class<?> entityClass = null;
+		for (Type item : types) {
+			if (item instanceof ParameterizedType) {
+				ParameterizedType t = (ParameterizedType) item;
+				Type[] ts = t.getActualTypeArguments();
+				Class<?> tmpType = (Class<?>) ts[0];
+				if (ReflectUtil.isGeneralClass(tmpType)) {
+					entityClass = tmpType;
+				}
+			}
+		}
+		
+		return entityClass;
 	}
 }
