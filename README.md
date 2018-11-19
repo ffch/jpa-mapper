@@ -18,7 +18,7 @@
  6. 易于切换，从JPA hibernate替换为mybatis，只需要将CrudRepository替换为CrudMapper，当然，mybatis没办法方法重载，所以CrudRepository相同的方法名会做一定的区分。
 
 ## 启动说明
-springboot启动：
+ **springboot启动：** 
 ```xml
 <dependency>
     <groupId>com.cff</groupId>
@@ -27,7 +27,7 @@ springboot启动：
 </dependency>
 ```
 
-非AutoConfiguration:
+ **非AutoConfiguration:** 
 ```xml
 <dependency>
     <groupId>com.cff</groupId>
@@ -36,9 +36,7 @@ springboot启动：
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
-
 调用：
-
 ```
 MapperScanner mapperScanner = new MapperScanner();
 mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
