@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 
 	<name>jpa-mapper</name>
-	<description>Demo project for Spring Boot</description>
+	<description>jpa code for mybatis</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
