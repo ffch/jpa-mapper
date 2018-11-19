@@ -48,7 +48,7 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 基于mybatis注解方案，需要继承CrudMapper<T, ID>, CrudMapper中定义的方法可以直接使用，查询方法支持findBy + 字段名（And）查询。
 
 ## 版权声明
-JpaMapper使用 [Apache License 2.0][] 协议.
+JpaMapper使用 Apache License 2.0 协议.
 
 ## 作者信息
       
