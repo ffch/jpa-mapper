@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.cff</groupId>
 		<artifactId>jpa-mapper</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 	<artifactId>jpa-mapper-core</artifactId>
 	<name>JpaMapper-core</name>

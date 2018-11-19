@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.cff</groupId>
 		<artifactId>jpa-mapper-spring-boot</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 	<artifactId>jpa-mapper-spring-boot-autoconfigure</artifactId>
 	<packaging>jar</packaging>
