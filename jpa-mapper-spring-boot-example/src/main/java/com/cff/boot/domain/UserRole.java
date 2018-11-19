@@ -16,13 +16,13 @@ public class UserRole implements Serializable {
 
 	@Id
 	@GeneratedValue(generator="JDBC")
-	@Column(unique=true, nullable=false)
-	private int id;
+	@Column()
+	private Integer id;
 
 	@Column(length=10)
 	private String role;
 	
-	@Column(length=10)
+	@Column(name ="userName")
 	private String userName;
 
 	public String getUserName() {
@@ -36,11 +36,11 @@ public class UserRole implements Serializable {
 	public UserRole() {
 	}
 
-	public int getId() {
-		return this.id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -50,6 +50,11 @@ public class UserRole implements Serializable {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	@Override
+	public String toString() {
+		return "UserRole [id=" + id + ", role=" + role + ", userName=" + userName + "]";
 	}
 
 	

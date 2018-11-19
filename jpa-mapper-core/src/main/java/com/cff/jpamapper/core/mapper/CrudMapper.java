@@ -14,7 +14,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @param entity
 	 * @return the saved entity
 	 */
-	<S extends T> int save(@Param("object") S entity);
+	<S extends T> int save(S entity);
 
 	/**
 	 * Saves all given entities. no id save 
@@ -24,7 +24,7 @@ public interface CrudMapper<T, ID extends Serializable>{
 	 * @return the saved entities
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
 	 */
-	<S extends T> int saveAll(@Param("list") Collection<S> entities);
+	<S extends T> int saveAll(Collection<S> entities);
 	
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the

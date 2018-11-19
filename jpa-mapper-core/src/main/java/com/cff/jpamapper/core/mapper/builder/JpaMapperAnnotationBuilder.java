@@ -58,14 +58,16 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		boolean flushCache = !isSelect;
 		boolean useCache = isSelect;
 
-		JpaMapperKeyGenerator jpaMapperKeyGenerator = processGeneratedValue(entityClass, mappedStatementId,
-				getParameterType(method), languageDriver);
-		KeyGenerator keyGenerator = jpaMapperKeyGenerator.getKeyGenerator();
-		String keyProperty = jpaMapperKeyGenerator.getKeyProperty();
-		String keyColumn = jpaMapperKeyGenerator.getKeyColumn();
+		KeyGenerator keyGenerator = NoKeyGenerator.INSTANCE;
+		String keyProperty = "id";
+		String keyColumn = null;
 
 		if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
-			keyGenerator = configuration.isUseGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
+			JpaMapperKeyGenerator jpaMapperKeyGenerator = processGeneratedValue(entityClass, mappedStatementId,
+					getParameterType(method), languageDriver);
+			keyGenerator = jpaMapperKeyGenerator.getKeyGenerator();
+			keyProperty = jpaMapperKeyGenerator.getKeyProperty();
+			keyColumn = jpaMapperKeyGenerator.getKeyColumn();;
 		}
 
 		assistant.addMappedStatement(mappedStatementId, sqlSource, statementType, sqlCommandType, null, null,
@@ -163,6 +165,8 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				idField = field;
 			}
 		}
+		if (idField == null)
+			return jpaMapperKeyGenerator;
 		Column columnAnnotation = idField.getAnnotation(Column.class);
 		String fieldName = idField.getName();
 		String fieldDeclaredName = fieldName;

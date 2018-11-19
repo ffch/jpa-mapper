@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cff.boot.dao.UserInfoDao;
+import com.cff.boot.dao.UserRoleDao;
 import com.cff.boot.domain.UserInfo;
+import com.cff.boot.domain.UserRole;
 
 @RestController
 public class WebRest {
 	@Autowired
 	UserInfoDao userInfoDao;
+	@Autowired
+	UserRoleDao userRoleDao;
 	
 	@RequestMapping("/findByUserName")
 	public List<UserInfo> findByUserName(){
@@ -40,6 +44,24 @@ public class WebRest {
 		userInfo.setPasswd("342");
 		userInfo.setMobile("342");
 		System.out.println(userInfoDao.save(userInfo));
+	}
+	
+	@RequestMapping("/saveRole")
+	public void saveRole(){
+		UserRole userInfo = new UserRole();
+		userInfo.setUserName("heihei");
+		userInfo.setRole("USER");
+		System.out.println(userRoleDao.save(userInfo));
+		System.out.println(userInfo);
+	}
+	
+	@RequestMapping("/saveRoleTest")
+	public void saveRoleTest(){
+		UserRole userInfo = new UserRole();
+		userInfo.setUserName("admin");
+		userInfo.setRole("USER");
+		System.out.println(userRoleDao.saveTest(userInfo,1));
+		System.out.println(userInfo);
 	}
 	
 	@RequestMapping("/saveall")

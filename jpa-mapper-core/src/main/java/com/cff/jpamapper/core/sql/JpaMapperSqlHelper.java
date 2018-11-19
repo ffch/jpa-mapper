@@ -395,17 +395,15 @@ public class JpaMapperSqlHelper {
 				if (id == null)
 					continue;
 			}
-			sql.append(" <if test='object.");
+			sql.append(" <if test='");
 			sql.append(fieldName);
 			sql.append(" != null'> ");
 			sql.append(fieldDeclaredName);
 
-			valuesSql.append(" <if test='object.");
+			valuesSql.append(" <if test='");
 			valuesSql.append(fieldName);
 			valuesSql.append(" != null'> ");
 			valuesSql.append(" #{");
-			valuesSql.append("object");
-			valuesSql.append(".");
 			valuesSql.append(fieldName);
 			sql.append(" , </if> ");
 			valuesSql.append("}, </if> ");		
