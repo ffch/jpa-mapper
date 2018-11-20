@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 
+import com.cff.jpamapper.core.entity.JpaModelEntity;
+
 public class IgnoreSqlType implements SqlType {
 
 	public static final IgnoreSqlType INSTANCE = new IgnoreSqlType();
@@ -14,7 +16,7 @@ public class IgnoreSqlType implements SqlType {
 	}
 
 	@Override
-	public String makeSql(Class<?> entity, Method method) {
+	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
 		return null;
 	}
 }

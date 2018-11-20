@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 
-import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -20,6 +19,7 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.annotation.SelectKey;
+import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
@@ -29,10 +29,19 @@ import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
+	JpaModelEntity jpaModelEntity;
 
 	public JpaMapperAnnotationBuilder(Configuration configuration, Class<?> type) {
 		super(configuration, type);
 		assistant.setCurrentNamespace(type.getName());
+	}
+
+	public JpaModelEntity getJpaModelEntity() {
+		return jpaModelEntity;
+	}
+
+	public void setJpaModelEntity(JpaModelEntity jpaModelEntity) {
+		this.jpaModelEntity = jpaModelEntity;
 	}
 
 	@Override
@@ -44,9 +53,8 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = getParameterType(method);
 
-		Class<?> entityClass = ReflectUtil.findGenericClass(type);
-
-		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(entityClass, method, jpaMapperSqlType, parameterTypeClass, languageDriver, configuration);
+		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(jpaModelEntity, method, jpaMapperSqlType,
+				parameterTypeClass, languageDriver, configuration);
 
 		StatementType statementType = StatementType.PREPARED;
 		ResultSetType resultSetType = ResultSetType.FORWARD_ONLY;
@@ -63,11 +71,12 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		String keyColumn = null;
 
 		if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
-			JpaMapperKeyGenerator jpaMapperKeyGenerator = processGeneratedValue(entityClass, mappedStatementId,
+			JpaMapperKeyGenerator jpaMapperKeyGenerator = processGeneratedValue(mappedStatementId,
 					getParameterType(method), languageDriver);
 			keyGenerator = jpaMapperKeyGenerator.getKeyGenerator();
 			keyProperty = jpaMapperKeyGenerator.getKeyProperty();
-			keyColumn = jpaMapperKeyGenerator.getKeyColumn();;
+			keyColumn = jpaMapperKeyGenerator.getKeyColumn();
+			;
 		}
 
 		assistant.addMappedStatement(mappedStatementId, sqlSource, statementType, sqlCommandType, null, null,
@@ -91,28 +100,16 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 	 * @param entityColumn
 	 * @param generatedValue
 	 */
-	protected JpaMapperKeyGenerator processGeneratedValue(Class<?> entity, String baseStatementId,
-			Class<?> parameterTypeClass, LanguageDriver languageDriver) {
+	protected JpaMapperKeyGenerator processGeneratedValue(String baseStatementId, Class<?> parameterTypeClass,
+			LanguageDriver languageDriver) {
 		JpaMapperKeyGenerator jpaMapperKeyGenerator = new JpaMapperKeyGenerator();
-		Field fields[] = entity.getDeclaredFields();
-		GeneratedValue generatedValue = null;
-		Field idField = null;
-		for (Field field : fields) {
-			if (field.isAnnotationPresent(GeneratedValue.class)) {
-				generatedValue = field.getAnnotation(GeneratedValue.class);
-				idField = field;
-			}
-		}
-		if (idField == null)
-			return jpaMapperKeyGenerator;
-		Column columnAnnotation = idField.getAnnotation(Column.class);
-		String fieldName = idField.getName();
-		String fieldDeclaredName = fieldName;
-		if (columnAnnotation != null) {
-			if (StringUtil.isNotEmpty(columnAnnotation.name())) {
-				fieldDeclaredName = columnAnnotation.name();
-			}
-		}
+		Field idField = jpaModelEntity.getIdField();
+		if(idField == null)return jpaMapperKeyGenerator;
+		GeneratedValue generatedValue = idField.getAnnotation(GeneratedValue.class);
+		
+		String fieldName = jpaModelEntity.getIdName();
+		String fieldDeclaredName = jpaModelEntity.getIdColumn();
+		
 		if (generatedValue != null) {
 			if ("JDBC".equals(generatedValue.generator())) {
 				jpaMapperKeyGenerator.setKeyGenerator(Jdbc3KeyGenerator.INSTANCE);
