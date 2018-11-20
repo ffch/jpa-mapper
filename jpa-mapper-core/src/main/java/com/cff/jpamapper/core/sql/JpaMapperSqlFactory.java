@@ -2,10 +2,29 @@ package com.cff.jpamapper.core.sql;
 
 import java.lang.reflect.Method;
 
-import com.cff.jpamapper.core.util.ReflectUtil;
+import org.apache.ibatis.builder.BuilderException;
+import org.apache.ibatis.mapping.SqlSource;
+import org.apache.ibatis.scripting.LanguageDriver;
+import org.apache.ibatis.session.Configuration;
+
+import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperSqlFactory {
 
+	public static SqlSource createSqlSource(Class<?> entity, Method method, SqlType sqlCommandType,
+			Class<?> parameterTypeClass, LanguageDriver languageDriver, Configuration configuration) {
+		try {
+			String sql = sqlCommandType.makeSql(entity, method);
+			if (StringUtil.isEmpty(sql))
+				return null;
+			return languageDriver.createSqlSource(configuration, sql, parameterTypeClass);
+		} catch (Exception e) {
+			throw new BuilderException("Could not find value method on SQL annotation.  Cause: " + e, e);
+		}
+	}
+
+	@Deprecated
 	public static String makeSelectOneSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.selectEntitySql(entity));
@@ -14,6 +33,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeSelectAllSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.selectEntitySql(entity));
@@ -21,6 +41,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeSelectBatchSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -33,6 +54,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeSelectBySql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.selectEntitySql(entity));
@@ -42,6 +64,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeCountSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.selectCountSql());
@@ -50,6 +73,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeExistsSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.selectExistSql());
@@ -58,6 +82,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeDeleteSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.deleteSql());
@@ -66,6 +91,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeDeleteEntitySql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -76,6 +102,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeDeleteBatchSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -86,6 +113,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeDeleteAllSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append(JpaMapperSqlHelper.deleteSql());
@@ -93,6 +121,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeSaveSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -101,7 +130,8 @@ public class JpaMapperSqlFactory {
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}
-	
+
+	@Deprecated
 	public static String makeUpdateSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -111,6 +141,7 @@ public class JpaMapperSqlFactory {
 		return sql.toString().trim();
 	}
 
+	@Deprecated
 	public static String makeSaveAllSql(Class<?> entity, Method method, boolean hasId) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
@@ -121,6 +152,7 @@ public class JpaMapperSqlFactory {
 
 	}
 
+	@Deprecated
 	public static String makeUpdateAllSql(Class<?> entity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");

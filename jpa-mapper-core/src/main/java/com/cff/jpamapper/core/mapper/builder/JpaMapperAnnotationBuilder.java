@@ -24,7 +24,7 @@ import com.cff.jpamapper.core.key.SelectKey;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
-import com.cff.jpamapper.core.sql.JpaMapperSqlType;
+import com.cff.jpamapper.core.sqltype.SqlType;
 import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
 
@@ -39,14 +39,14 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 	public void parseStatement(Method method) {
 		final String mappedStatementId = type.getName() + "." + method.getName();
 		LanguageDriver languageDriver = assistant.getLanguageDriver(null);
-		JpaMapperSqlType jpaMapperSqlType = getJpaMapperSqlType(method);
+		SqlType jpaMapperSqlType = getJpaMapperSqlType(method);
 
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = getParameterType(method);
 
 		Class<?> entityClass = ReflectUtil.findGenericClass(type);
 
-		SqlSource sqlSource = buildSqlSource(entityClass, method, jpaMapperSqlType, parameterTypeClass, languageDriver);
+		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(entityClass, method, jpaMapperSqlType, parameterTypeClass, languageDriver, configuration);
 
 		StatementType statementType = StatementType.PREPARED;
 		ResultSetType resultSetType = ResultSetType.FORWARD_ONLY;
@@ -80,70 +80,8 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 
-	public JpaMapperSqlType getJpaMapperSqlType(Method method) {
+	public SqlType getJpaMapperSqlType(Method method) {
 		return MethodTypeHelper.getSqlCommandType(method);
-	}
-
-	private SqlSource buildSqlSource(Class<?> entity, Method method, JpaMapperSqlType sqlCommandType,
-			Class<?> parameterTypeClass, LanguageDriver languageDriver) {
-		try {
-			String sql = null;
-			switch (sqlCommandType.getType()) {
-			case JpaMapperSqlType.TYPE_FINDONE:
-				sql = JpaMapperSqlFactory.makeSelectOneSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_FINDALL:
-				sql = JpaMapperSqlFactory.makeSelectAllSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_FINDBATCH:
-				sql = JpaMapperSqlFactory.makeSelectBatchSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_FINDBY:
-				sql = JpaMapperSqlFactory.makeSelectBySql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_COUNT:
-				sql = JpaMapperSqlFactory.makeCountSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_EXISTS:
-				sql = JpaMapperSqlFactory.makeExistsSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_DELETE:
-				sql = JpaMapperSqlFactory.makeDeleteSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_DELETEENTITY:
-				sql = JpaMapperSqlFactory.makeDeleteEntitySql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_DELETEBATCH:
-				sql = JpaMapperSqlFactory.makeDeleteBatchSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_DELETEALL:
-				sql = JpaMapperSqlFactory.makeDeleteAllSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_SAVE:
-				sql = JpaMapperSqlFactory.makeSaveSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_SAVEALL:
-				sql = JpaMapperSqlFactory.makeSaveAllSql(entity, method, false);
-				break;
-			case JpaMapperSqlType.TYPE_SAVEALLWITHID:
-				sql = JpaMapperSqlFactory.makeSaveAllSql(entity, method, true);
-				break;
-			case JpaMapperSqlType.TYPE_UPDATEALL:
-				sql = JpaMapperSqlFactory.makeUpdateAllSql(entity, method);
-				break;
-			case JpaMapperSqlType.TYPE_UPDATE:
-				sql = JpaMapperSqlFactory.makeUpdateSql(entity, method);
-				break;
-			default:
-				break;
-			}
-
-			if (StringUtil.isEmpty(sql))
-				return null;
-			return languageDriver.createSqlSource(configuration, sql, parameterTypeClass);
-		} catch (Exception e) {
-			throw new BuilderException("Could not find value method on SQL annotation.  Cause: " + e, e);
-		}
 	}
 
 	/**
