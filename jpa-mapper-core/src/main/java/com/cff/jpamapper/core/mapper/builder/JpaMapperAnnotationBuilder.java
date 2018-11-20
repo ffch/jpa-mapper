@@ -19,8 +19,8 @@ import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
+import com.cff.jpamapper.core.annotation.SelectKey;
 import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
-import com.cff.jpamapper.core.key.SelectKey;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
