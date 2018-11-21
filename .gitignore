@@ -26,3 +26,17 @@ hs_err_pid*
 /mvnw
 /mvnw.cmd
 /target/
+
+# Maven #
+target/
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.metadata/
+.classpath
+.project
+Servers/

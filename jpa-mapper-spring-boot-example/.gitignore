@@ -5,3 +5,18 @@
 /mvnw.cmd
 /.mvn/
 /.settings/
+
+
+# Maven #
+target/
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.metadata/
+.classpath
+.project
+Servers/
