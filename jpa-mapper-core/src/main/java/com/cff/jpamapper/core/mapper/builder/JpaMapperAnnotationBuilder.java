@@ -20,10 +20,12 @@ import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.annotation.SelectKey;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
+import com.cff.jpamapper.core.exception.JpaMapperException;
 import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
+import com.cff.jpamapper.core.sqltype.IgnoreSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
@@ -49,7 +51,9 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		final String mappedStatementId = type.getName() + "." + method.getName();
 		LanguageDriver languageDriver = assistant.getLanguageDriver(null);
 		SqlType jpaMapperSqlType = getJpaMapperSqlType(method);
-
+		if(jpaMapperSqlType instanceof IgnoreSqlType){
+			throw new JpaMapperException("未知的方法类型！");
+		}
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = getParameterType(method);
 

@@ -24,6 +24,11 @@ public class WebRest {
 		return userInfoDao.findByUserName("admin");
 	}
 	
+	@RequestMapping("/findBy")
+	public List<UserInfo> findBy(){
+		return userInfoDao.findByNameAndMobile("cff", "12");
+	}
+	
 	@RequestMapping("/findAll")
 	public List<UserInfo> findAll(){
 		return (List<UserInfo>) userInfoDao.findAll();
@@ -42,6 +47,7 @@ public class WebRest {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserName("heihei");
 		userInfo.setPasswd("342");
+		userInfo.setName("fcc");
 		userInfo.setMobile("342");
 		System.out.println(userInfoDao.save(userInfo));
 	}
@@ -135,6 +141,11 @@ public class WebRest {
 	@RequestMapping("/delete")
 	public void delete(){
 		userInfoDao.delete("heihei");
+	}
+	
+	@RequestMapping("/deleteBy")
+	public void deleteBy(){
+		userInfoDao.deleteByNameAndMobile("fcc","342");
 	}
 	
 	@RequestMapping("/testall")
