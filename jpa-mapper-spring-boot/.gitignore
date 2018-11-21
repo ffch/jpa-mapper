@@ -3,6 +3,7 @@
 
 # Maven #
 target/
+bin/
 
 # IDEA #
 .idea/

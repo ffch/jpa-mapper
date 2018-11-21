@@ -1,6 +1,6 @@
 /.settings/
 /target/
-
+/bin/
 
 # Maven #
 target/
