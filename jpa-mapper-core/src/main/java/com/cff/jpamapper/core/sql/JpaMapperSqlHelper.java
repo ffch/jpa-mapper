@@ -5,45 +5,33 @@ import java.util.HashMap;
 import java.util.Map;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.exception.JpaMapperException;
-import com.cff.jpamapper.core.method.MethodTypeHelper;
-import com.cff.jpamapper.core.util.StringUtil;
+
 
 public class JpaMapperSqlHelper {
-	public static final String CONDITION_AND = "AND|and|And";
 
-	public static String conditionRegBySql(JpaModelEntity jpaModelEntity, Method method) {
+	public static String conditionRegBySql(JpaModelEntity jpaModelEntity, String params[]) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("where 1=1 ");
-		String name = method.getName();
-
-		String para = name.replaceFirst(MethodTypeHelper.SELECT, "");
-		if (StringUtil.isEmpty(para)) {
-			throw new JpaMapperException("findBy条件不完整！");
-		}
-		String params[] = para.split(CONDITION_AND);
-
-		if (params == null || params.length < 1) {
-			throw new JpaMapperException("findBy条件不完整！");
-		}
+		sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
+		
 		Map<String, String> ignoreCaseMap = new HashMap<>();
 		ignoreCaseMap.put(jpaModelEntity.getIdName().toLowerCase(), jpaModelEntity.getIdColumn());
 		for (Map.Entry<String, String> entry : jpaModelEntity.getFieldMap().entrySet()) {
 			ignoreCaseMap.put(entry.getKey().toLowerCase(), entry.getValue());
 		}
 
-		int index = 0;
+		int index = 1;
 		for (String param : params) {
 			String fieldDeclaredName = ignoreCaseMap.get(param.toLowerCase());
 			if (fieldDeclaredName != null) {
-				sql.append(" AND ");
+				sql.append("AND ");
 				sql.append(fieldDeclaredName);
-				sql.append(" = #{arg");
+				sql.append(" = #{param");
 				sql.append(index);
-				sql.append("}");
+				sql.append("} ");
 			}
 			index++;
 		}
-
+		sql.append("</trim>");
 		return sql.toString();
 	}
 
@@ -101,7 +89,7 @@ public class JpaMapperSqlHelper {
 	 */
 	public static String conditionEntitySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("where 1=1 ");
+		sql.append(" where ");
 		sql.append(" <if test='object.");
 		sql.append(jpaModelEntity.getIdName());
 		sql.append(" != null'> and ");

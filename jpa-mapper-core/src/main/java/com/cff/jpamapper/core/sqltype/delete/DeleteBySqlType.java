@@ -1,4 +1,4 @@
-package com.cff.jpamapper.core.sqltype.select;
+package com.cff.jpamapper.core.sqltype.delete;
 
 import java.lang.reflect.Method;
 
@@ -11,30 +11,30 @@ import com.cff.jpamapper.core.sql.JpaMapperSqlHelper;
 import com.cff.jpamapper.core.sqltype.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
 
-public class FindBySqlType implements SqlType {
+public class DeleteBySqlType implements SqlType {
 
-	public static final FindBySqlType INSTANCE = new FindBySqlType();
+	public static final DeleteBySqlType INSTANCE = new DeleteBySqlType();
 
 	@Override
 	public SqlCommandType getSqlCommandType() {
-		return SqlCommandType.SELECT;
+		return SqlCommandType.DELETE;
 	}
 
 	@Override
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
-		sql.append(JpaMapperSqlHelper.selectEntitySql(jpaModelEntity));
+		sql.append(JpaMapperSqlHelper.deleteSql());
 		sql.append(JpaMapperSqlHelper.fromSql(jpaModelEntity));
 		
 		String name = method.getName();
-		String para = name.replaceFirst(MethodTypeHelper.SELECT, "");
+		String para = name.replaceFirst(MethodTypeHelper.DELETE, "");
 		if (StringUtil.isEmpty(para)) {
-			throw new JpaMapperException("findBy条件不完整！");
+			throw new JpaMapperException("deleteBy条件不完整！");
 		}
 		String params[] = para.split(CONDITION_AND);
 		if (params == null || params.length < 1) {
-			throw new JpaMapperException("findBy条件不完整！");
+			throw new JpaMapperException("deleteBy条件不完整！");
 		}
 		
 		sql.append(JpaMapperSqlHelper.conditionRegBySql(jpaModelEntity, params));

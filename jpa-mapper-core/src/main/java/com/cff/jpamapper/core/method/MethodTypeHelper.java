@@ -10,6 +10,7 @@ import com.cff.jpamapper.core.sqltype.IgnoreSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 import com.cff.jpamapper.core.sqltype.delete.DeleteAllSqlType;
 import com.cff.jpamapper.core.sqltype.delete.DeleteBatchSqlType;
+import com.cff.jpamapper.core.sqltype.delete.DeleteBySqlType;
 import com.cff.jpamapper.core.sqltype.delete.DeleteEntitySqlType;
 import com.cff.jpamapper.core.sqltype.delete.DeleteSqlType;
 import com.cff.jpamapper.core.sqltype.insert.SaveAllSqlType;
@@ -63,15 +64,7 @@ public class MethodTypeHelper {
 
 	public static SqlType getSqlCommandType(Method method) {
 		String name = method.getName();
-		SqlType jpaMapperSqlType = IgnoreSqlType.INSTANCE;
-
-		if (name.startsWith(SELECT)) {
-			jpaMapperSqlType = FindBySqlType.INSTANCE;
-		} else {
-			jpaMapperSqlType = mapperTypeMap.getOrDefault(name, IgnoreSqlType.INSTANCE);
-		}
-
-		return jpaMapperSqlType;
+		return getSqlCommandType(name);
 	}
 
 	public static SqlType getSqlCommandType(String name) {
@@ -79,26 +72,17 @@ public class MethodTypeHelper {
 
 		if (name.startsWith(SELECT)) {
 			jpaMapperSqlType = FindBySqlType.INSTANCE;
+		} else if (name.startsWith(DELETE)) {
+			jpaMapperSqlType = DeleteBySqlType.INSTANCE;
 		} else {
 			jpaMapperSqlType = mapperTypeMap.getOrDefault(name, IgnoreSqlType.INSTANCE);
 		}
-
 		return jpaMapperSqlType;
 	}
 
 	public static SqlCommandType getSqlCommandTypeReg(Method method) {
 		String name = method.getName();
-		if (name.matches(SELECT_REG)) {
-			return SqlCommandType.SELECT;
-		} else if (name.matches(UPDATE_REG)) {
-			return SqlCommandType.UPDATE;
-		} else if (name.matches(DELETE_REG)) {
-			return SqlCommandType.DELETE;
-		} else if (name.matches(INSERT_REG)) {
-			return SqlCommandType.INSERT;
-		} else {
-			return SqlCommandType.UNKNOWN;
-		}
+		return getSqlCommandTypeReg(name);
 	}
 
 	public static SqlCommandType getSqlCommandTypeReg(String name) {
