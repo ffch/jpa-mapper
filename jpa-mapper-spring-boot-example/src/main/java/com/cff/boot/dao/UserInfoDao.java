@@ -41,4 +41,10 @@ public interface UserInfoDao extends CrudMapper<UserInfo, String> {
 	" ) ",
 	 "</script>"})
 	int saveTest(UserInfo entity);
+
+	int deleteByUserName(String userName);
+	
+	List<UserInfo> findByNameAndMobile(String name, String mobile);
+	
+	int deleteByNameAndMobile(String name, String mobile);
 }
