@@ -48,6 +48,15 @@ public class UserInfo implements Serializable {
 	public String getMobile() {
 		return this.mobile;
 	}
+	
+	public String[] getTables() {
+		if(this.mobile.startsWith("1")){
+			return new String[]{"user_info", "user_info_copy1", "user_info_copy2"};
+		}else if(this.mobile.startsWith("2")){
+			return new String[]{"user_info_copy1", "user_info_copy2"};
+		}
+		return new String[]{"user_info", "user_info_copy1", "user_info_copy2"};
+	}
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;

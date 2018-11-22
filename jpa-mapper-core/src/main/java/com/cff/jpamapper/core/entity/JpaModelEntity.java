@@ -11,6 +11,8 @@ public class JpaModelEntity {
 	String idName;
 	String idColumn;
 	Field idField;
+	boolean isSharding = false;
+	ShardingEntity shardingEntity = null;
 
 	public String getTableName() {
 		return tableName;
@@ -69,4 +71,19 @@ public class JpaModelEntity {
 		this.idField = idField;
 	}
 
+	public boolean isSharding() {
+		return isSharding;
+	}
+
+	public void setSharding(boolean isSharding) {
+		this.isSharding = isSharding;
+	}
+
+	public ShardingEntity getShardingEntity() {
+		return shardingEntity;
+	}
+
+	public void setShardingEntity(ShardingEntity shardingEntity) {
+		this.shardingEntity = shardingEntity;
+	}
 }

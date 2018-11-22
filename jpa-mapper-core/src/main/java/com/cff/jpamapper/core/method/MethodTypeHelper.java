@@ -21,6 +21,7 @@ import com.cff.jpamapper.core.sqltype.select.ExistsSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindAllSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindBatchSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindBySqlType;
+import com.cff.jpamapper.core.sqltype.select.FindDistinctAllSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindOneSqlType;
 import com.cff.jpamapper.core.sqltype.update.UpdateAllSqlType;
 import com.cff.jpamapper.core.sqltype.update.UpdateSqlType;
@@ -42,6 +43,7 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findOne", FindOneSqlType.INSTANCE);
 		mapperTypeMap.put("exists", ExistsSqlType.INSTANCE);
 		mapperTypeMap.put("findAll", FindAllSqlType.INSTANCE);
+		mapperTypeMap.put("findDistinctAll", FindDistinctAllSqlType.INSTANCE);
 		mapperTypeMap.put("findBatch", FindBatchSqlType.INSTANCE);
 		mapperTypeMap.put("count", CountSqlType.INSTANCE);
 
