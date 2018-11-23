@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import org.apache.ibatis.annotations.Param;
 
-public interface CrudMapper<T, ID extends Serializable>{
+public interface CrudMapper<T, ID extends Serializable> extends JMapper<T, ID>{
 	
 	/**
 	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the

@@ -41,6 +41,15 @@ public interface UserInfoDao extends CrudMapper<UserInfo, String> {
 	" ) ",
 	 "</script>"})
 	int saveTest(UserInfo entity);
+	
+	@Select({"<script> ",
+		 "<bind name=\"pattern\" value=\"_parameter.getTables()\" />",
+		 "<foreach collection =\"pattern\" item=\"item\" index=\"index\" separator=\" union \" >",
+	        " select userName,mobile, name, passwd,valid from ${item}",
+	        " <if test='_parameter.mobile != null'> where mobile = #{_parameter.mobile} </if> ",
+	     "</foreach>",
+		 "</script>"})
+	List<UserInfo> selectTestOgnl(UserInfo userInfo);
 
 	int deleteByUserName(String userName);
 	

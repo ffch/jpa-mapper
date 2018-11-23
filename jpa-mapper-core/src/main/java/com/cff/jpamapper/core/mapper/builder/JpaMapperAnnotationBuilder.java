@@ -27,7 +27,6 @@ import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
 import com.cff.jpamapper.core.sqltype.IgnoreSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
-import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {

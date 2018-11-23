@@ -155,4 +155,28 @@ public class WebRest {
 		System.out.println(userInfoDao.findByUserName("admin"));
 		System.out.println(userInfoDao.findOne("admin"));
 	}
+	
+	@RequestMapping("/testOgnl")
+	public List<UserInfo> testOgnl(){
+		UserInfo userInfo = new UserInfo();
+		userInfo.setMobile("123");
+		return userInfoDao.selectTestOgnl(userInfo);
+	}
+	@RequestMapping("/testOgnl1")
+	public List<UserInfo> testOgnl1(){
+		UserInfo userInfo = new UserInfo();
+		userInfo.setMobile("212");
+		return userInfoDao.selectTestOgnl(userInfo);
+	}
+	@RequestMapping("/testOgnl2")
+	public List<UserInfo> testOgnl2(){
+		UserInfo userInfo = new UserInfo();
+		userInfo.setMobile("34564");
+		return userInfoDao.selectTestOgnl(userInfo);
+	}
+	@RequestMapping("/testOgnl3")
+	public List<UserInfo> testOgnl3(){
+		UserInfo userInfo = new UserInfo();
+		return userInfoDao.selectTestOgnl(userInfo);
+	}
 }

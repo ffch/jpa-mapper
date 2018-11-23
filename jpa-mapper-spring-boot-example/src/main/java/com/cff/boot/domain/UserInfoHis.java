@@ -2,7 +2,13 @@ package com.cff.boot.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.cff.jpamapper.core.annotation.ShardingKey;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -10,9 +16,9 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="user_info")
+@Table(name="user_info_his")
 @NamedQuery(name="UserInfo.findAll", query="SELECT u FROM UserInfo u")
-public class UserInfo implements Serializable {
+public class UserInfoHis implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -20,6 +26,7 @@ public class UserInfo implements Serializable {
 	private String userName;
 
 	@Column(length=20)
+	@ShardingKey(prefix="_", methodPrecis="getTable", methodRange = "getTables")
 	private String mobile;
 
 	@Column(length=64)
@@ -31,10 +38,7 @@ public class UserInfo implements Serializable {
 	@Column(length=2)
 	private String valid;
 
-	//bi-directional many-to-one association to UserRole
-	
-
-	public UserInfo() {
+	public UserInfoHis() {
 	}
 
 	public String getUserName() {
@@ -49,13 +53,23 @@ public class UserInfo implements Serializable {
 		return this.mobile;
 	}
 	
-	public String[] getTables() {
-		if(this.mobile.startsWith("1")){
-			return new String[]{"user_info", "user_info_copy1", "user_info_copy2"};
-		}else if(this.mobile.startsWith("2")){
-			return new String[]{"user_info_copy1", "user_info_copy2"};
+	public static String getTable(Object mobile) {
+		int index = Integer.parseInt(mobile.toString()) % 5;
+		return String.valueOf(index);
+	}
+	
+	public static String[] getTables(Object start, Object end) {
+		Map<Integer, String> maps = new HashMap<>();
+		int index = 0;
+		for(int i = Integer.parseInt(start.toString()); i < Integer.parseInt(end.toString()); i++){
+			if(index >= 5)break;
+			maps.put(index, String.valueOf(i % 5));
+			index++;	
 		}
-		return new String[]{"user_info", "user_info_copy1", "user_info_copy2"};
+		
+		List<String> mapValueList = new ArrayList<String>(maps.values()); 
+		String[] arr = new String[mapValueList.size()];
+		return mapValueList.toArray(arr);
 	}
 
 	public void setMobile(String mobile) {

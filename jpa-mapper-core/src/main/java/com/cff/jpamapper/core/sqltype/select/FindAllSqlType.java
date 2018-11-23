@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
-import com.cff.jpamapper.core.sql.JpaMapperSqlHelper;
+import com.cff.jpamapper.core.sql.ShardingSqlHelper;
+import com.cff.jpamapper.core.sql.DefaultSqlHelper;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
 public class FindAllSqlType implements SqlType {
@@ -19,10 +20,20 @@ public class FindAllSqlType implements SqlType {
 
 	@Override
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
+		if(jpaModelEntity.isSharding())return makeShardingSql(jpaModelEntity, method);
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
-		sql.append(JpaMapperSqlHelper.selectEntitySql(jpaModelEntity));
-		sql.append(JpaMapperSqlHelper.fromSql(jpaModelEntity));
+		sql.append(DefaultSqlHelper.selectEntitySql(jpaModelEntity));
+		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
+		sql.append(" </script>");
+		return sql.toString().trim();
+	}
+	
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method){
+		final StringBuilder sql = new StringBuilder();
+		sql.append("<script> ");
+		sql.append(ShardingSqlHelper.bindSqlNoPrefix(jpaModelEntity, false));
+		sql.append(ShardingSqlHelper.shardingSelectSql(jpaModelEntity, false));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}

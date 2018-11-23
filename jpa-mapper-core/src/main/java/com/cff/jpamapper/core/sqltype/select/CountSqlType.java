@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
-import com.cff.jpamapper.core.sql.JpaMapperSqlHelper;
+import com.cff.jpamapper.core.sql.DefaultSqlHelper;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
 public class CountSqlType implements SqlType {
@@ -20,8 +20,8 @@ public class CountSqlType implements SqlType {
 	@Override
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(JpaMapperSqlHelper.selectCountSql());
-		sql.append(JpaMapperSqlHelper.fromSql(jpaModelEntity));
+		sql.append(DefaultSqlHelper.selectCountSql());
+		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
 		return sql.toString().trim();
 	}
 }

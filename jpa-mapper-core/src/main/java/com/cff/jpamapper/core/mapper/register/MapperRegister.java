@@ -2,6 +2,7 @@ package com.cff.jpamapper.core.mapper.register;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +12,12 @@ import javax.persistence.Table;
 
 import org.apache.ibatis.session.Configuration;
 
+import com.cff.jpamapper.core.annotation.ShardingKey;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
+import com.cff.jpamapper.core.entity.ShardingEntity;
 import com.cff.jpamapper.core.exception.JpaMapperException;
+import com.cff.jpamapper.core.mapper.JMapper;
+import com.cff.jpamapper.core.mapper.SimpleShardingMapper;
 import com.cff.jpamapper.core.mapper.builder.JpaMapperAnnotationBuilder;
 import com.cff.jpamapper.core.util.ReflectUtil;
 import com.cff.jpamapper.core.util.StringUtil;
@@ -21,6 +26,11 @@ public class MapperRegister {
 	private Class<?> mapper;
 	private List<Method> registerMethod = new ArrayList<>();
 	private Configuration configuration;
+
+	public static final int NO_MAPPER = -1;
+	public static final int CRUD_MAPPER = 0;
+	public static final int SHARDING_MAPPER = 2;
+	int type = NO_MAPPER;
 
 	public MapperRegister(Class<?> mapper, Configuration configuration) {
 		this.mapper = mapper;
@@ -38,16 +48,41 @@ public class MapperRegister {
 	}
 
 	public void genMappedStatement() {
+		type = checkMapperType();
+		if (type == NO_MAPPER)
+			return;
+
 		JpaMapperAnnotationBuilder jpaMapperAnnotationBuilder = new JpaMapperAnnotationBuilder(configuration, mapper);
 		JpaModelEntity jpaModelEntity = parseModel();
+
 		jpaMapperAnnotationBuilder.setJpaModelEntity(jpaModelEntity);
 		for (Method method : registerMethod) {
 			jpaMapperAnnotationBuilder.parseStatement(method);
 		}
 	}
 
+	private int checkMapperType() {
+		Class<?> interfases[] = mapper.getInterfaces();
+		if (interfases == null || interfases.length < 1) {
+			return NO_MAPPER;
+		}
+		for (Class<?> interfase : interfases) {
+			if (ReflectUtil.checkTypeFit(interfase, JMapper.class)) {
+				if (interfase.equals(SimpleShardingMapper.class)) {
+					return SHARDING_MAPPER;
+				} else {
+					return CRUD_MAPPER;
+				}
+			}
+		}
+		return NO_MAPPER;
+	}
+
 	private JpaModelEntity parseModel() {
 		JpaModelEntity jpaModelEntity = new JpaModelEntity();
+		if (type == SHARDING_MAPPER) {
+			jpaModelEntity.setSharding(true);
+		}
 		Class<?> entity = ReflectUtil.findGenericClass(mapper);
 		if (entity == null) {
 			throw new JpaMapperException("未能获取到Mapper的泛型类型");
@@ -62,6 +97,7 @@ public class MapperRegister {
 
 		Field fields[] = entity.getDeclaredFields();
 		for (Field field : fields) {
+
 			Id id = field.getAnnotation(Id.class);
 			boolean isId = false;
 			if (id != null)
@@ -77,6 +113,18 @@ public class MapperRegister {
 				if (!isId)
 					continue;
 			}
+			
+			// 判断是否分表
+			if (jpaModelEntity.isSharding()) {
+				ShardingKey shardingKey = field.getAnnotation(ShardingKey.class);
+				if (shardingKey != null) {
+					String entityFullName = entity.getCanonicalName();
+					ShardingEntity shardingEntity = new ShardingEntity(shardingKey, fieldName, fieldDeclaredName, entityFullName);
+					jpaModelEntity.setShardingEntity(shardingEntity);
+					continue;
+				}
+			}
+			
 			if (isId) {
 				jpaModelEntity.setHasId(true);
 				jpaModelEntity.setIdName(fieldName);

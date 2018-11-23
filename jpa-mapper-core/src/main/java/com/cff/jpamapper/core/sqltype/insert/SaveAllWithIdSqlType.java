@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
-import com.cff.jpamapper.core.sql.JpaMapperSqlHelper;
+import com.cff.jpamapper.core.sql.DefaultSqlHelper;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
 public class SaveAllWithIdSqlType implements SqlType {
@@ -21,8 +21,8 @@ public class SaveAllWithIdSqlType implements SqlType {
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
-		sql.append(JpaMapperSqlHelper.insertSql(jpaModelEntity));
-		sql.append(JpaMapperSqlHelper.valuesCollectionSql(jpaModelEntity, true));
+		sql.append(DefaultSqlHelper.insertSql(jpaModelEntity));
+		sql.append(DefaultSqlHelper.valuesCollectionSql(jpaModelEntity, true));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}
