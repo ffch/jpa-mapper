@@ -10,14 +10,16 @@ public class ShardingEntity {
 	private String methodRange = "";
 	private String fieldName;
 	private String fieldDeclaredName;
+	private String entityFullName;
 	
-	public ShardingEntity(ShardingKey shardingKey, String fieldName, String fieldDeclaredName){
+	public ShardingEntity(ShardingKey shardingKey, String fieldName, String fieldDeclaredName, String entityFullName){
 		this.fieldName = fieldName;
 		this.fieldDeclaredName = fieldDeclaredName;
 		this.prefix = shardingKey.prefix();
 		this.suffix = shardingKey.suffix();
 		this.methodPrecis = shardingKey.methodPrecis();
 		this.methodRange = shardingKey.methodRange();
+		this.entityFullName = entityFullName;
 	}
 	
 	public ShardingEntity() {
@@ -69,5 +71,13 @@ public class ShardingEntity {
 
 	public void setMethodRange(String methodRange) {
 		this.methodRange = methodRange;
+	}
+
+	public String getEntityFullName() {
+		return entityFullName;
+	}
+
+	public void setEntityFullName(String entityFullName) {
+		this.entityFullName = entityFullName;
 	}
 }

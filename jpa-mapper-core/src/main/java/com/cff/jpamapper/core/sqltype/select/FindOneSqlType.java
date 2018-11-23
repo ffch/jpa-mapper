@@ -20,7 +20,6 @@ public class FindOneSqlType implements SqlType {
 
 	@Override
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
-		if(jpaModelEntity.isSharding())return makeShardingSql(jpaModelEntity, method);
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
 		sql.append(DefaultSqlHelper.selectEntitySql(jpaModelEntity));
@@ -30,14 +29,4 @@ public class FindOneSqlType implements SqlType {
 		return sql.toString().trim();
 	}
 	
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method){
-		final StringBuilder sql = new StringBuilder();
-		sql.append("<script> ");
-		sql.append(ShardingSqlHelper.bindSql(jpaModelEntity, true));
-		sql.append(ShardingSqlHelper.selectEntitySql(jpaModelEntity));
-		sql.append(ShardingSqlHelper.fromSoleSql(jpaModelEntity));
-		sql.append(ShardingSqlHelper.conditionSoleSql(jpaModelEntity));
-		sql.append(" </script>");
-		return sql.toString().trim();
-	}
 }

@@ -39,14 +39,21 @@ public interface SimpleShardingMapper<T, ID extends Serializable>  extends JMapp
 	 * @param entity
 	 * @return
 	 */
-	Collection<T> findAll(@Param("object") T entity, @Param("start") Object start, @Param("end") Object end);
-	
-	Collection<T> findOne(@Param("object") T entity);
+	Collection<T> findAll(@Param("start") Object start, @Param("end") Object end, @Param("distinct") boolean distinct);
 	
 	/**
-	 * 根据分表字段查询所有,非空字段也作为条件查询
+	 * 根据指定的分表字段查询
 	 * @param entity
 	 * @return
 	 */
-	Collection<T> findDistinctAll(@Param("object") T entity, @Param("start") Object start, @Param("end") Object end);
+	Collection<T> find(@Param("object") T entity);
+	
+	/**
+	 * 根据分表字段及查询条件查询
+	 * @param entity
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	Collection<T> findRange(@Param("object") T entity, @Param("start") Object start, @Param("end") Object end, @Param("distinct") boolean distinct);
 }

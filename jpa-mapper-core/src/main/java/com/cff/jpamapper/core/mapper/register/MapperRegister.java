@@ -118,7 +118,8 @@ public class MapperRegister {
 			if (jpaModelEntity.isSharding()) {
 				ShardingKey shardingKey = field.getAnnotation(ShardingKey.class);
 				if (shardingKey != null) {
-					ShardingEntity shardingEntity = new ShardingEntity(shardingKey, fieldName, fieldDeclaredName);
+					String entityFullName = entity.getCanonicalName();
+					ShardingEntity shardingEntity = new ShardingEntity(shardingKey, fieldName, fieldDeclaredName, entityFullName);
 					jpaModelEntity.setShardingEntity(shardingEntity);
 					continue;
 				}

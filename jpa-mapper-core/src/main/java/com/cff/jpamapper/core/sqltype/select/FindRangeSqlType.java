@@ -9,9 +9,9 @@ import com.cff.jpamapper.core.sql.ShardingSqlHelper;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
-public class FindDistinctAllSqlType implements SqlType {
+public class FindRangeSqlType implements SqlType {
 
-	public static final FindDistinctAllSqlType INSTANCE = new FindDistinctAllSqlType();
+	public static final FindRangeSqlType INSTANCE = new FindRangeSqlType();
 
 	@Override
 	public SqlCommandType getSqlCommandType() {
@@ -25,6 +25,7 @@ public class FindDistinctAllSqlType implements SqlType {
 		sql.append("<script> ");
 		sql.append(DefaultSqlHelper.selectEntitySql(jpaModelEntity));
 		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
+		sql.append(DefaultSqlHelper.conditionIdSql(jpaModelEntity));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}
@@ -33,7 +34,7 @@ public class FindDistinctAllSqlType implements SqlType {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
 		sql.append(ShardingSqlHelper.bindSql(jpaModelEntity, false));
-		sql.append(ShardingSqlHelper.shardingSelectDistinctSql(jpaModelEntity));
+		sql.append(ShardingSqlHelper.shardingSelectSql(jpaModelEntity, true));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}

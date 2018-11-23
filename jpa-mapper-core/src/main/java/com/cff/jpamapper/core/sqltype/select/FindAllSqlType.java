@@ -32,8 +32,8 @@ public class FindAllSqlType implements SqlType {
 	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method){
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
-		sql.append(ShardingSqlHelper.bindSql(jpaModelEntity, false));
-		sql.append(ShardingSqlHelper.shardingSelectSql(jpaModelEntity));
+		sql.append(ShardingSqlHelper.bindSqlNoPrefix(jpaModelEntity, false));
+		sql.append(ShardingSqlHelper.shardingSelectSql(jpaModelEntity, false));
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}

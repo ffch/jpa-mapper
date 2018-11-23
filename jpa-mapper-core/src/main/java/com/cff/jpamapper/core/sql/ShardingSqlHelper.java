@@ -3,6 +3,7 @@ package com.cff.jpamapper.core.sql;
 import java.util.Map;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.entity.ShardingEntity;
+import com.cff.jpamapper.core.util.StringUtil;
 
 public class ShardingSqlHelper extends SqlHelper {
 
@@ -12,46 +13,60 @@ public class ShardingSqlHelper extends SqlHelper {
 	 * @param isSole
 	 * @return
 	 */
-	public static String bindSql(JpaModelEntity jpaModelEntity, boolean isSole) {
+	public static String bindSql(JpaModelEntity jpaModelEntity, boolean isSole, String paramPrefix) {
 		ShardingEntity shardingEntity = jpaModelEntity.getShardingEntity();
 		StringBuilder sql = new StringBuilder();
-		sql.append("<bind name=\"pattern\" value=\"object.");
+		sql.append("<bind name=\"pattern\" value=\"@");
+		sql.append(shardingEntity.getEntityFullName());
+		sql.append("@");
 		if(isSole){
 			sql.append(shardingEntity.getMethodPrecis());
+			sql.append("(");
+			if(StringUtil.isNotEmpty(paramPrefix)){
+				sql.append(paramPrefix);
+				sql.append(".");
+			}
+			sql.append(shardingEntity.getFieldName());
 		}else{
 			sql.append(shardingEntity.getMethodRange());
+			sql.append("(");
+			sql.append("start, end");
 		}
-		sql.append("()\" />");
-		return sql.toString();
-	}
-
-	/**
-	 * 不去重多表查询
-	 * @param jpaModelEntity
-	 * @return
-	 */
-	public static String shardingSelectSql(JpaModelEntity jpaModelEntity) {
-		StringBuilder sql = new StringBuilder();
-		sql.append("<foreach collection =\"pattern\" item=\"item\" index=\"index\" separator=\" union all \" >");
-		sql.append(selectEntitySql(jpaModelEntity));
-		sql.append(fromRangeSql(jpaModelEntity));
-		sql.append(conditionRangeSql(jpaModelEntity));
-		sql.append("</foreach>");
+		sql.append(")\" />");
 		return sql.toString();
 	}
 	
+	public static String bindSql(JpaModelEntity jpaModelEntity, boolean isSole ) {
+		return bindSql(jpaModelEntity, isSole, "object");
+	}
+	
+	public static String bindSqlNoPrefix(JpaModelEntity jpaModelEntity, boolean isSole ) {
+		return bindSql(jpaModelEntity, isSole, null);
+	}
+	
 	/**
-	 * 去重多表查询
+	 * 多表查询语句
 	 * @param jpaModelEntity
 	 * @return
 	 */
-	public static String shardingSelectDistinctSql(JpaModelEntity jpaModelEntity) {
-		StringBuilder sql = new StringBuilder();
-		sql.append("<foreach collection =\"pattern\" item=\"item\" index=\"index\" separator=\" union \" >");
+	public static String shardingSelectSql(JpaModelEntity jpaModelEntity, boolean hasCondition) {
+		StringBuilder sql = new StringBuilder();		
+		sql.append("<choose>");
+        sql.append("<when test='distinct'>");
+        sql.append("<foreach collection =\"pattern\" item=\"item\" index=\"index\" separator=\" union \">");	
 		sql.append(selectEntitySql(jpaModelEntity));
 		sql.append(fromRangeSql(jpaModelEntity));
-		sql.append(conditionRangeSql(jpaModelEntity));
+		sql.append(conditionRangeSql(jpaModelEntity, hasCondition));
 		sql.append("</foreach>");
+        sql.append("</when>");
+        sql.append("<otherwise>");
+        sql.append("<foreach collection =\"pattern\" item=\"item\" index=\"index\" separator=\" union all \">");	
+		sql.append(selectEntitySql(jpaModelEntity));
+		sql.append(fromRangeSql(jpaModelEntity));
+		sql.append(conditionRangeSql(jpaModelEntity, hasCondition));
+		sql.append("</foreach>");
+        sql.append("</otherwise>");
+        sql.append("</choose>");
 		return sql.toString();
 	}
 	
@@ -74,11 +89,13 @@ public class ShardingSqlHelper extends SqlHelper {
 	 * @param jpaModelEntity
 	 * @return
 	 */
-	public static String conditionRangeSql(JpaModelEntity jpaModelEntity) {
+	public static String conditionRangeSql(JpaModelEntity jpaModelEntity, boolean hasCondition) {
 		StringBuilder sql = new StringBuilder();
 		sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
 		sql.append(conditionRangeShardingKeySql(jpaModelEntity));
-		sql.append(conditionEntitySql(jpaModelEntity));
+		if(hasCondition){
+			sql.append(conditionEntitySql(jpaModelEntity));
+		}
 		sql.append("</trim>");
 		return sql.toString();
 	}
@@ -133,7 +150,7 @@ public class ShardingSqlHelper extends SqlHelper {
 	private static String conditionRangeShardingKeySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(jpaModelEntity.getShardingEntity().getFieldDeclaredName());
-		sql.append("between #{start} and #{end}");
+		sql.append(" between #{start} and #{end} ");
 		return sql.toString();
 	}
 
