@@ -56,6 +56,8 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 
 基于mybatis注解方案，需要继承CrudMapper<T, ID>, CrudMapper中定义的方法可以直接使用，查询方法支持findBy + 字段名（And）查询。删除方法支持deleteBy + 字段名（And）删除。
 
+这里获取字段的方式是根据接口中泛型类的字段去解析的，字段必须加上@Column注解，Id字段加上@Id可以不加@Column，这里没实现那么多功能，原因是个人觉得没多大必要，支持的越多，项目越臃肿，这就偏离了选择mybatis的初衷
+
 **主键策略：**
 
 1. @GeneratedValue(generator="JDBC"), 使用自增策略，对应mybatis的Jdbc3KeyGenerator
