@@ -90,6 +90,10 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 
 示例使用mobile的取余5寻找分表字段。
 
+## 设计原理
+
+https://blog.csdn.net/feiyangtianyao/article/category/8446635
+
 ## 版权声明
 JpaMapper使用 Apache License 2.0 协议.
 
