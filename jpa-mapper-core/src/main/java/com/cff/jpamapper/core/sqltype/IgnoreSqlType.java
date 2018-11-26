@@ -19,4 +19,9 @@ public class IgnoreSqlType implements SqlType {
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
 		return null;
 	}
+
+	@Override
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
+		return null;
+	}
 }

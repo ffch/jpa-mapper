@@ -41,4 +41,9 @@ public class FindBySqlType implements SqlType {
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}
+
+	@Override
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
+		return null;
+	}
 }

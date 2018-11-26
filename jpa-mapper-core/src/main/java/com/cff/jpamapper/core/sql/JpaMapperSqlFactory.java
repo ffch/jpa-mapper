@@ -16,13 +16,26 @@ public class JpaMapperSqlFactory {
 	public static SqlSource createSqlSource(JpaModelEntity jpaModelEntity, Method method, SqlType sqlCommandType,
 			Class<?> parameterTypeClass, LanguageDriver languageDriver, Configuration configuration) {
 		try {
-			String sql = sqlCommandType.makeSql(jpaModelEntity, method);
+			String sql = "";
+			if(jpaModelEntity.isSharding()){
+				sql = createShardingSql(jpaModelEntity, method, sqlCommandType);
+			}else{
+				sql = createCommonSql(jpaModelEntity, method, sqlCommandType);
+			}
 			if (StringUtil.isEmpty(sql))
 				return null;
 			return languageDriver.createSqlSource(configuration, sql, parameterTypeClass);
 		} catch (Exception e) {
 			throw new BuilderException("Could not find value method on SQL annotation.  Cause: " + e, e);
 		}
+	}
+	
+	public static String createCommonSql(JpaModelEntity jpaModelEntity, Method method, SqlType sqlCommandType) {
+		return sqlCommandType.makeSql(jpaModelEntity, method);
+	}
+	
+	public static String createShardingSql(JpaModelEntity jpaModelEntity, Method method, SqlType sqlCommandType) {
+		return sqlCommandType.makeShardingSql(jpaModelEntity, method);
 	}
 	
 }

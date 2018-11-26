@@ -20,7 +20,6 @@ public class FindRangeSqlType implements SqlType {
 
 	@Override
 	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
-		if(jpaModelEntity.isSharding())return makeShardingSql(jpaModelEntity, method);
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
 		sql.append(DefaultSqlHelper.selectEntitySql(jpaModelEntity));
@@ -30,6 +29,7 @@ public class FindRangeSqlType implements SqlType {
 		return sql.toString().trim();
 	}
 	
+	@Override
 	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method){
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
