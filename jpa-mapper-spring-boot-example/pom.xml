@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.cff</groupId>
 		<artifactId>jpa-mapper</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>jpa-mapper-spring-boot-example</artifactId>
 	<packaging>jar</packaging>
@@ -61,7 +61,6 @@
         <dependency>
             <groupId>com.cff</groupId>
             <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         
         <!--必须依赖-->
