@@ -24,4 +24,9 @@ public class DeleteAllSqlType implements SqlType {
 		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
 		return sql.toString().trim();
 	}
+
+	@Override
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
+		return null;
+	}
 }

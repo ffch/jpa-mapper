@@ -25,4 +25,9 @@ public class ExistsSqlType implements SqlType {
 		sql.append(DefaultSqlHelper.conditionIdSql(jpaModelEntity));
 		return sql.toString().trim();
 	}
+
+	@Override
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
+		return null;
+	}
 }

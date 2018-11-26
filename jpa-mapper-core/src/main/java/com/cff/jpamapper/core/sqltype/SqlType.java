@@ -12,4 +12,6 @@ public interface SqlType {
 	public SqlCommandType getSqlCommandType();
 
 	String makeSql(JpaModelEntity jpaModelEntity, Method method);
+	
+	String makeShardingSql(JpaModelEntity jpaModelEntity, Method method);
 }

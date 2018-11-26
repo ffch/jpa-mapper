@@ -19,17 +19,16 @@ public class DeleteSqlType implements SqlType {
 	}
 
 	@Override
-	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
-		if(jpaModelEntity.isSharding())return makeShardingSql(jpaModelEntity, method);
-		
+	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {		
 		final StringBuilder sql = new StringBuilder();
 		sql.append(DefaultSqlHelper.deleteSql());
 		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
 		sql.append(DefaultSqlHelper.conditionIdSql(jpaModelEntity));
 		return sql.toString().trim();
 	}
-	
-	private String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
+
+	@Override
+	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
 		final StringBuilder sql = new StringBuilder();
 		sql.append("<script> ");
 		sql.append(ShardingSqlHelper.bindSql(jpaModelEntity, true));
