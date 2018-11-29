@@ -25,6 +25,12 @@ v1.1
 
  1. 部分逻辑调整优化
  2. 增加简单分表功能
+ 
+v1.2
+
+ 1. 部分逻辑调整优化
+ 2. 增加分页功能、排序功能，因分页写法的不同，暂时只支持mysql和oracle
+ 3. 支持pageBy分页功能，功能都与jpa hibernate的相似
 
 ## 启动说明
  **springboot启动：** 
@@ -32,7 +38,7 @@ v1.1
 <dependency>
     <groupId>com.cff</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
@@ -41,7 +47,7 @@ v1.1
 <dependency>
     <groupId>com.cff</groupId>
     <artifactId>jpa-mapper-core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
@@ -91,6 +97,27 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 ```
 
 示例使用mobile的取余5寻找分表字段。
+
+**分页功能：**
+
+1. 需要继承PagingAndSortingMapper<T, ID>，其中定义的方法可以直接使用，因为继承自CrudMapper，因此CrudMapper的方法也可以使用，同时也支持CrudMapper的findBy等功能。
+
+2. findAllPageable示例：
+```
+Pageable pageable = new Pageable();
+pageable.setPage(1);
+pageable.setSize(5);
+Order order = new Order(Direction.ASC, "mobile");
+Order order1 = new Order(Direction.ASC, "userName");
+Sort sort = new Sort(order, order1);
+pageable.setSort(sort);
+Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
+```
+3. pageBy分页查询，因为CrudMapper已经定义了findBy,所以这里换个名字。用法如：
+```
+Page<UserInfo> pageByPasswd(String passwd, Pageable pageable);
+```
+这样就可以以passwd分页查询了。
 
 ## 设计原理
 
