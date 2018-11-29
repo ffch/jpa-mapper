@@ -26,4 +26,16 @@ public class Pageable {
 	public void setSize(int size) {
 		this.size = size;
 	}
+
+
+	public int getPage() {
+		return page;
+	}
+
+
+	public int getSize() {
+		return size;
+	}
+	
+	
 }

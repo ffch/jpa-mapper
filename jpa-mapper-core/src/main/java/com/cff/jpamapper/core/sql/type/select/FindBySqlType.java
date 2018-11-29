@@ -6,7 +6,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.exception.JpaMapperException;
-import com.cff.jpamapper.core.method.MethodTypeHelper;
+import com.cff.jpamapper.core.helper.MethodTypeHelper;
 import com.cff.jpamapper.core.sql.helper.DefaultSqlHelper;
 import com.cff.jpamapper.core.sql.type.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sql.type.SqlType;

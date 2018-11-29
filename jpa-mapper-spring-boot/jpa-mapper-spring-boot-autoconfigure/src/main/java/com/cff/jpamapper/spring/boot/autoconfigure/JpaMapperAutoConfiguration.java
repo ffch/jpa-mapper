@@ -40,22 +40,21 @@ public class JpaMapperAutoConfiguration {
     private ApplicationContext applicationContext;
     
     @PostConstruct
-    public void addPageInterceptor() throws SQLException {
-        MapperScanner mapperScanner = new MapperScanner();
-        for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
-        	org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
-        	Environment environment = configuration.getEnvironment();
-        	DataSource dataSource = environment.getDataSource();
-        	DatabaseMetaData md = dataSource.getConnection().getMetaData();
-        	configuration.setDatabaseId(md.getDatabaseProductName());
-
-        	MapperRegistry mapperRegistry = configuration.getMapperRegistry();
-        	List<Class<?>> mappers = new ArrayList<>(mapperRegistry.getMappers());
-        	MappedStatementRegister mappedStatementRegister = new MappedStatementRegister(configuration);
-        	mappedStatementRegister.addMappers(mappers);
-        	mapperScanner.addMappedStatementRegister(mappedStatementRegister);
-        }
-        
-        mapperScanner.scanAndRegisterJpaMethod();
+    public void addPageInterceptor() {
+    	try{
+	        MapperScanner mapperScanner = new MapperScanner();
+	        for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
+	        	org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
+	        	MapperRegistry mapperRegistry = configuration.getMapperRegistry();
+	        	List<Class<?>> mappers = new ArrayList<>(mapperRegistry.getMappers());
+	        	MappedStatementRegister mappedStatementRegister = new MappedStatementRegister(configuration);
+	        	mappedStatementRegister.addMappers(mappers);
+	        	mapperScanner.addMappedStatementRegister(mappedStatementRegister);
+	        }
+	        
+	        mapperScanner.scanAndRegisterJpaMethod();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     }
 }

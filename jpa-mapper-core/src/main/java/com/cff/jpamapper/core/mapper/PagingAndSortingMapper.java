@@ -2,7 +2,6 @@ package com.cff.jpamapper.core.mapper;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 
 import com.cff.jpamapper.core.domain.page.Page;
 import com.cff.jpamapper.core.domain.page.Pageable;

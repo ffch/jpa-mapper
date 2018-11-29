@@ -1,5 +1,6 @@
 package com.cff.jpamapper.core;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,18 +11,18 @@ import com.cff.jpamapper.core.mapper.register.MappedStatementRegister;
 
 public class MapperScanner {
 	List<MappedStatementRegister> mappedStatementRegisters = new ArrayList<>();
-
+	
 	public void addMappedStatementRegister(MappedStatementRegister mappedStatementRegister) {
 		mappedStatementRegisters.add(mappedStatementRegister);
 	}
 
-	public void scanAndRegisterJpaMethod() {
+	public void scanAndRegisterJpaMethod() throws SQLException {
 		for(MappedStatementRegister mappedStatementRegister : mappedStatementRegisters){
 			mappedStatementRegister.registerMappedStatement();
 		}
 	}
 	
-	public void scanAndRegisterJpaMethod(List<SqlSessionFactory> sqlSessionFactoryList) {
+	public void scanAndRegisterJpaMethod(List<SqlSessionFactory> sqlSessionFactoryList) throws SQLException {
 		for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
         	org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
         	MapperRegistry mapperRegistry = configuration.getMapperRegistry();

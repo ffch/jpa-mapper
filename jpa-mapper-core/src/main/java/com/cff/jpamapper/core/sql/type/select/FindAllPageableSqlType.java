@@ -1,10 +1,12 @@
 package com.cff.jpamapper.core.sql.type.select;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
+import com.cff.jpamapper.core.entity.MethodParameters;
 import com.cff.jpamapper.core.sql.helper.PageAndSortSqlHelper;
 import com.cff.jpamapper.core.sql.type.AbstractPageSortSqlType;
 
@@ -30,6 +32,11 @@ public class FindAllPageableSqlType extends AbstractPageSortSqlType {
 	@Override
 	public boolean pageSupport() {
 		return true;
+	}
+
+	@Override
+	public List<MethodParameters> getMethodParameters(JpaModelEntity jpaModelEntity, String methodName) {
+		return defaultMethodParameters();
 	}
 
 }

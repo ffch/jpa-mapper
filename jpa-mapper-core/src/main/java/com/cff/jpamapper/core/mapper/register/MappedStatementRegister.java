@@ -1,8 +1,13 @@
 package com.cff.jpamapper.core.mapper.register;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 
 public class MappedStatementRegister {
@@ -22,9 +27,14 @@ public class MappedStatementRegister {
 		}
 	}
 	
-	public void registerMappedStatement(){
+	public void registerMappedStatement() throws SQLException{
+		Environment environment = configuration.getEnvironment();
+    	DataSource dataSource = environment.getDataSource();
+    	DatabaseMetaData md = dataSource.getConnection().getMetaData();
+    	String databaseName = md.getDatabaseProductName();
+    	
 		for(MapperRegister mapperRegister : mapperRegisters){
-			mapperRegister.genMappedStatement();
+			mapperRegister.genMappedStatement(databaseName);
 		}
 	}
 

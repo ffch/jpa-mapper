@@ -20,10 +20,7 @@ public class Page<T> {
 	public void setContent(List<T> content) {
 		this.content = content;
 	}
-
-	public int getCount() {
-		return count;
-	}
+	
 	public void setCount(int count) {
 		this.count = count;
 	}

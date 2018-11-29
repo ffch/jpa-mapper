@@ -37,11 +37,13 @@ import com.cff.jpamapper.core.domain.conceal.PagedResult;
 import com.cff.jpamapper.core.domain.conceal.PagedResults;
 import com.cff.jpamapper.core.domain.page.PageConstant;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
+import com.cff.jpamapper.core.entity.MethodParameters;
 import com.cff.jpamapper.core.exception.JpaMapperException;
+import com.cff.jpamapper.core.helper.MethodTypeHelper;
 import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
-import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
+import com.cff.jpamapper.core.sql.type.AbstractPageSortSqlType;
 import com.cff.jpamapper.core.sql.type.IgnoreSqlType;
 import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
@@ -74,9 +76,6 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = getParameterType(method);
 
-		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(jpaModelEntity, method, jpaMapperSqlType,
-				parameterTypeClass, languageDriver, configuration);
-
 		StatementType statementType = StatementType.PREPARED;
 		ResultSetType resultSetType = ResultSetType.FORWARD_ONLY;
 		boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
@@ -84,7 +83,10 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		if (isSelect) {
 			if(jpaMapperSqlType.pageSupport()){
 				String methodName = PageConstant.PAGE_METHOD_PREFIX + method.getName();
-				resultMapId = parsePagedResultMap(method, methodName);
+				AbstractPageSortSqlType abstractPageSortSqlType = (AbstractPageSortSqlType)jpaMapperSqlType;
+				List<MethodParameters> methodParametersList = abstractPageSortSqlType.getMethodParameters(jpaModelEntity, method.getName());
+				jpaModelEntity.setMethodParametersList(methodParametersList);
+				resultMapId = parsePagedResultMap(method, methodName, methodParametersList);
 				JpaMapperConcealedBuilder jpaMapperConcealedBuilder = new JpaMapperConcealedBuilder(configuration, type);
 				jpaMapperConcealedBuilder.setJpaModelEntity(jpaModelEntity);
 				jpaMapperConcealedBuilder.parseConcealStatement(methodName);
@@ -92,6 +94,10 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				resultMapId = parseResultMap(method);
 			}
 		}
+		
+		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(jpaModelEntity, method, jpaMapperSqlType,
+				parameterTypeClass, languageDriver, configuration);
+		
 		boolean flushCache = !isSelect;
 		boolean useCache = isSelect;
 
@@ -118,10 +124,11 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 
-	private String parsePagedResultMap(Method method, String methodName) {
+	private String parsePagedResultMap(Method method, String methodName, List<MethodParameters> methodParametersList) {
 		Class<?> returnType = getReturnType(method);
 		ConstructorArgs args = method.getAnnotation(ConstructorArgs.class);
 		List<PagedResult> results = new ArrayList<>();
+		
 		PagedResult countPagedResult = new PagedResult();
 		countPagedResult.setColumn(PageConstant.COUNT);
 		countPagedResult.setProperty(PageConstant.COUNT);
@@ -129,23 +136,31 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		countPagedResult.setJdbcType(JdbcType.INTEGER);
 		results.add(countPagedResult);
 		
-		PagedResult pagePagedResult = new PagedResult();
-		pagePagedResult.setColumn(PageConstant.PAGE);
-		pagePagedResult.setProperty(PageConstant.PAGE);
-		pagePagedResult.setJavaType(Integer.class);
-		pagePagedResult.setJdbcType(JdbcType.INTEGER);
-		results.add(pagePagedResult);
-		
-		PagedResult sizePagedResult = new PagedResult();
-		sizePagedResult.setColumn(PageConstant.SIZE);
-		sizePagedResult.setProperty(PageConstant.SIZE);
-		sizePagedResult.setJavaType(Integer.class);
-		sizePagedResult.setJdbcType(JdbcType.INTEGER);
-		results.add(sizePagedResult);
+		StringBuilder reg = new StringBuilder();
+		reg.append("{");
+		if(methodParametersList != null){
+			int index = 0;
+			for(MethodParameters item : methodParametersList){
+				if(index < 2){
+					PagedResult pagedResult = new PagedResult();
+					pagedResult.setColumn(item.getProperty());
+					pagedResult.setProperty(item.getProperty());
+					pagedResult.setJavaType(item.getType());
+					results.add(pagedResult);
+				}
+				
+				reg.append(item.getProperty());
+				reg.append(" = ");
+				reg.append(item.getProperty());
+				reg.append(",");
+				index++;
+			}
+			reg.deleteCharAt(reg.length()-1);
+		}
+		reg.append("}");
 		
 		PagedResult contentPagedResult = new PagedResult();
-		contentPagedResult.setColumn(String.format("{%s = %s,%s = %s}", PageConstant.PAGE, PageConstant.PAGE,
-				PageConstant.SIZE, PageConstant.SIZE));
+		contentPagedResult.setColumn(reg.toString());
 		contentPagedResult.setProperty(PageConstant.CONTENT);
 		contentPagedResult.setSelect(methodName);
 		results.add(contentPagedResult);
@@ -158,7 +173,6 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		applyConstructorArgs(argsIf(args), returnType, resultMappings);
 		applyPagedResults(results, returnType, resultMappings);
 		Discriminator disc = applyDiscriminator(resultMapId, returnType, typeDiscriminator);
-		// TODO add AutoMappingBehaviour
 		assistant.addResultMap(resultMapId, returnType, null, disc, resultMappings, null);
 		createDiscriminatorResultMaps(resultMapId, returnType, typeDiscriminator);
 		

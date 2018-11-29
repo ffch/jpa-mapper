@@ -1,11 +1,13 @@
-package com.cff.jpamapper.core.method;
+package com.cff.jpamapper.core.helper;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 
+import com.cff.jpamapper.core.domain.page.PageConstant;
 import com.cff.jpamapper.core.sql.type.IgnoreSqlType;
 import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.sql.type.delete.DeleteAllSqlType;
@@ -26,12 +28,16 @@ import com.cff.jpamapper.core.sql.type.select.FindBySqlType;
 import com.cff.jpamapper.core.sql.type.select.FindOneSqlType;
 import com.cff.jpamapper.core.sql.type.select.FindRangeSqlType;
 import com.cff.jpamapper.core.sql.type.select.FindSqlType;
+import com.cff.jpamapper.core.sql.type.select.PageBySqlType;
 import com.cff.jpamapper.core.sql.type.select.conceal.PagedFindAllPageableSqlType;
+import com.cff.jpamapper.core.sql.type.select.conceal.PagedPageBySqlType;
 import com.cff.jpamapper.core.sql.type.update.UpdateAllSqlType;
 import com.cff.jpamapper.core.sql.type.update.UpdateSqlType;
 
 public class MethodTypeHelper {
 	public static final String SELECT = "findBy";
+	public static final String PAGE = "pageBy";
+	
 	public static final String UPDATE = "updateBy";
 	public static final String DELETE = "deleteBy";
 	public static final String INSERT = "saveBy";
@@ -55,6 +61,8 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findAllSorted", FindAllSortedSqlType.INSTANCE);
 		mapperTypeMap.put("findAllPageable", FindAllPageableSqlType.INSTANCE);
 		mapperTypeMap.put("pagedfindAllPageable", PagedFindAllPageableSqlType.INSTANCE);
+		mapperTypeMap.put("pagedpageBy", PagedPageBySqlType.INSTANCE);
+
 
 		mapperTypeMap.put("delete", DeleteSqlType.INSTANCE);
 		mapperTypeMap.put("deleteBatch", DeleteBatchSqlType.INSTANCE);
@@ -70,6 +78,13 @@ public class MethodTypeHelper {
 	}
 
 	public static void main(String args[]) {
+		Field fields[] = MethodTypeHelper.class.getDeclaredFields();
+		for(Field item : fields){
+			Class<?> cls1 = item.getClass();
+			Class<?> cls2 = item.getType();
+			Class<?> cls3 = item.getDeclaringClass();
+			System.out.println("登等");
+		}
 
 	}
 
@@ -85,6 +100,10 @@ public class MethodTypeHelper {
 			jpaMapperSqlType = FindBySqlType.INSTANCE;
 		} else if (name.startsWith(DELETE)) {
 			jpaMapperSqlType = DeleteBySqlType.INSTANCE;
+		} else if (name.startsWith(PAGE)) {
+			jpaMapperSqlType = PageBySqlType.INSTANCE;
+		} else if (name.startsWith(PageConstant.PAGE_METHOD_PREFIX + PAGE)) {
+			jpaMapperSqlType = PagedPageBySqlType.INSTANCE;
 		} else {
 			jpaMapperSqlType = mapperTypeMap.getOrDefault(name, IgnoreSqlType.INSTANCE);
 		}

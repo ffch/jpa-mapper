@@ -13,7 +13,7 @@ import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperConcealedSqlFactory {
 
-	public static SqlSource createSqlSource(JpaModelEntity jpaModelEntity, String methodName, SqlType sqlCommandType,
+	public static SqlSource createSqlSource(JpaModelEntity jpaModelEntity, SqlType sqlCommandType,
 			Class<?> parameterTypeClass, LanguageDriver languageDriver, Configuration configuration) {
 		try {
 			String sql = sqlCommandType.makeConcealedSql(jpaModelEntity);

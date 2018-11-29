@@ -6,9 +6,9 @@ import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.helper.PageAndSortSqlHelper;
 import com.cff.jpamapper.core.sql.type.AbstractConcealedSqlType;
 
-public class PagedFindAllPageableSqlType extends AbstractConcealedSqlType {
+public class PagedPageBySqlType extends AbstractConcealedSqlType {
 
-	public static final PagedFindAllPageableSqlType INSTANCE = new PagedFindAllPageableSqlType();
+	public static final PagedPageBySqlType INSTANCE = new PagedPageBySqlType();
 
 	@Override
 	public SqlCommandType getSqlCommandType() {

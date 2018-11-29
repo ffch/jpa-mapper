@@ -2,6 +2,7 @@ package com.cff.jpamapper.core.entity;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JpaModelEntity {
@@ -15,6 +16,11 @@ public class JpaModelEntity {
 	boolean isPageSort = false;
 	ShardingEntity shardingEntity = null;
 	Class<?> targertEntity;
+	String databaseName;
+	
+	//分页参数
+	List<MethodParameters> methodParametersList = null;
+	
 	public String getTableName() {
 		return tableName;
 	}
@@ -103,5 +109,20 @@ public class JpaModelEntity {
 	public void setTargertEntity(Class<?> targertEntity) {
 		this.targertEntity = targertEntity;
 	}
-	
+
+	public String getDatabaseName() {
+		return databaseName;
+	}
+
+	public void setDatabaseName(String databaseName) {
+		this.databaseName = databaseName;
+	}
+
+	public List<MethodParameters> getMethodParametersList() {
+		return methodParametersList;
+	}
+
+	public void setMethodParametersList(List<MethodParameters> methodParametersList) {
+		this.methodParametersList = methodParametersList;
+	}
 }

@@ -54,12 +54,37 @@ public class SortRest {
 		return page;
 	}
 	
+	@RequestMapping("/selectInfo")
+	public List selectInfo(){
+		
+		List<UserInfo> page =  userInfoSortDao.selectInfo("123",1,5);
+		return page;
+	}
+	
+	@RequestMapping("/selectCondition")
+	public Page selectCondition(){
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setSize(5);
+		Page<UserInfo> page =  userInfoSortDao.selectCondition("123",pageable);
+		return page;
+	}
+	
 	@RequestMapping("/findAllPageable")
 	public com.cff.jpamapper.core.domain.page.Page findAllPageable(){
 		Pageable pageable = new Pageable();
-		pageable.setPage(0);
+		pageable.setPage(1);
 		pageable.setSize(5);
 		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
+		return page;
+	}
+	
+	@RequestMapping("/findPageable")
+	public com.cff.jpamapper.core.domain.page.Page findPageable(){
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setSize(5);
+		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.pageByPasswd("123", pageable);
 		return page;
 	}
 }

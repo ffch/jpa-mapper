@@ -2,6 +2,7 @@ package com.cff.jpamapper.core.mapper.builder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.persistence.GeneratedValue;
 
@@ -23,11 +24,13 @@ import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.annotation.SelectKey;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
+import com.cff.jpamapper.core.entity.MethodParameters;
 import com.cff.jpamapper.core.exception.JpaMapperException;
+import com.cff.jpamapper.core.helper.MethodTypeHelper;
 import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
-import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperConcealedSqlFactory;
+import com.cff.jpamapper.core.sql.type.AbstractConcealedSqlType;
 import com.cff.jpamapper.core.sql.type.IgnoreSqlType;
 import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
@@ -59,7 +62,7 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = ParamMap.class;
 
-		SqlSource sqlSource = JpaMapperConcealedSqlFactory.createSqlSource(jpaModelEntity, methodName, jpaMapperSqlType,
+		SqlSource sqlSource = JpaMapperConcealedSqlFactory.createSqlSource(jpaModelEntity, jpaMapperSqlType,
 				parameterTypeClass, languageDriver, configuration);
 
 		StatementType statementType = StatementType.PREPARED;
@@ -67,7 +70,7 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 		boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 		String resultMapId = null;
 		if (isSelect) {
-			resultMapId = parseResultMap(methodName);
+			resultMapId = parseResultMap(methodName, (AbstractConcealedSqlType) jpaMapperSqlType, jpaModelEntity.getMethodParametersList());
 		}
 		boolean flushCache = !isSelect;
 		boolean useCache = isSelect;
@@ -86,22 +89,23 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 	
-	private String parseResultMap(String methodName) {
+	private String parseResultMap(String methodName, AbstractConcealedSqlType concealedSqlType, List<MethodParameters> methodParametersList) {
 		Class<?> returnType = jpaModelEntity.getTargertEntity();
 		ConstructorArgs args = null;
 		Results results = null;
 		TypeDiscriminator typeDiscriminator = null;
-		String resultMapId = generateResultMapName(methodName);
+		String resultMapId = generateResultMapName(methodName, methodParametersList);
 		applyResultMap(resultMapId, returnType, argsIf(args), resultsIf(results), typeDiscriminator);
 		return resultMapId;
 	}
 	
-	public String generateResultMapName(String methodName) {		
+	public String generateResultMapName(String methodName, List<MethodParameters> methodParametersList) {		
 		StringBuilder suffix = new StringBuilder();
-		suffix.append("-");
-		suffix.append("int");
-		suffix.append("-");
-		suffix.append("int");
+		
+		for(MethodParameters item : methodParametersList){
+			suffix.append("-");
+			suffix.append(item.getType().getSimpleName());
+		}
 		
 		if (suffix.length() < 1) {
 			suffix.append("-void");

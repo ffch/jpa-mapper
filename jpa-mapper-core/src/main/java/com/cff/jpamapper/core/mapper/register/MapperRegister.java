@@ -50,14 +50,14 @@ public class MapperRegister {
 		}
 	}
 
-	public void genMappedStatement() {
+	public void genMappedStatement(String databaseName) {
 		type = checkMapperType();
 		if (type == NO_MAPPER)
 			return;
 
 		JpaMapperAnnotationBuilder jpaMapperAnnotationBuilder = new JpaMapperAnnotationBuilder(configuration, mapper);
 		JpaModelEntity jpaModelEntity = parseModel();
-
+		jpaModelEntity.setDatabaseName(databaseName);
 		jpaMapperAnnotationBuilder.setJpaModelEntity(jpaModelEntity);
 		for (Method method : registerMethod) {
 			jpaMapperAnnotationBuilder.parseStatement(method);
