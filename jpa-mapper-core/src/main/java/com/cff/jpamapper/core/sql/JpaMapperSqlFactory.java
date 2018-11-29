@@ -19,6 +19,8 @@ public class JpaMapperSqlFactory {
 			String sql = "";
 			if(jpaModelEntity.isSharding()){
 				sql = createShardingSql(jpaModelEntity, method, sqlCommandType);
+			}else if(jpaModelEntity.isPageSort()){
+				sql = createPageAndSortSql(jpaModelEntity, method, sqlCommandType);
 			}else{
 				sql = createCommonSql(jpaModelEntity, method, sqlCommandType);
 			}
@@ -36,6 +38,10 @@ public class JpaMapperSqlFactory {
 	
 	public static String createShardingSql(JpaModelEntity jpaModelEntity, Method method, SqlType sqlCommandType) {
 		return sqlCommandType.makeShardingSql(jpaModelEntity, method);
+	}
+	
+	public static String createPageAndSortSql(JpaModelEntity jpaModelEntity, Method method, SqlType sqlCommandType) {
+		return sqlCommandType.makePageSortSql(jpaModelEntity, method);
 	}
 	
 }

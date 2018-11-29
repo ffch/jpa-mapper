@@ -6,9 +6,10 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
-public class DeleteEntitySqlType implements SqlType {
+public class DeleteEntitySqlType extends AbstractPrecisSqlType {
 
 	public static final DeleteEntitySqlType INSTANCE = new DeleteEntitySqlType();
 
@@ -26,10 +27,5 @@ public class DeleteEntitySqlType implements SqlType {
 		sql.append(DefaultSqlHelper.conditionEntitySql(jpaModelEntity));
 		sql.append(" </script>");
 		return sql.toString().trim();
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
 	}
 }

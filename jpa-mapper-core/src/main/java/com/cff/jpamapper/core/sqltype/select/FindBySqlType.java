@@ -8,10 +8,11 @@ import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.exception.JpaMapperException;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
 
-public class FindBySqlType implements SqlType {
+public class FindBySqlType extends AbstractPrecisSqlType {
 
 	public static final FindBySqlType INSTANCE = new FindBySqlType();
 
@@ -40,10 +41,5 @@ public class FindBySqlType implements SqlType {
 		sql.append(DefaultSqlHelper.conditionRegBySql(jpaModelEntity, params));
 		sql.append(" </script>");
 		return sql.toString().trim();
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
 	}
 }

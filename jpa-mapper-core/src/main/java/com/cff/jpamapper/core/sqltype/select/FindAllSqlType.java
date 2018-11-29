@@ -7,9 +7,9 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.ShardingSqlHelper;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sqltype.AbstractShardingSqlType;
 
-public class FindAllSqlType implements SqlType {
+public class FindAllSqlType extends AbstractShardingSqlType {
 
 	public static final FindAllSqlType INSTANCE = new FindAllSqlType();
 

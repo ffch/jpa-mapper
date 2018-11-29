@@ -7,9 +7,10 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.ShardingSqlHelper;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
-public class FindOneSqlType implements SqlType {
+public class FindOneSqlType extends AbstractPrecisSqlType {
 
 	public static final FindOneSqlType INSTANCE = new FindOneSqlType();
 
@@ -28,10 +29,4 @@ public class FindOneSqlType implements SqlType {
 		sql.append(" </script>");
 		return sql.toString().trim();
 	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
-	}
-	
 }

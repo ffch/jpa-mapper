@@ -6,27 +6,15 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 
-public class IgnoreSqlType implements SqlType {
-
-	public static final IgnoreSqlType INSTANCE = new IgnoreSqlType();
-
+public abstract class AbstractShardingSqlType implements SqlType {
+	
 	@Override
 	public SqlCommandType getSqlCommandType() {
 		return SqlCommandType.UNKNOWN;
 	}
 
 	@Override
-	public String makeSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
-	}
-
-	@Override
 	public String makePageSortSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
+		return makeSql(jpaModelEntity, method);
 	}
 }

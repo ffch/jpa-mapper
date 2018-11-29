@@ -6,9 +6,9 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 
-public class ExistsSqlType implements SqlType {
+public class ExistsSqlType extends AbstractPrecisSqlType {
 
 	public static final ExistsSqlType INSTANCE = new ExistsSqlType();
 
@@ -24,10 +24,5 @@ public class ExistsSqlType implements SqlType {
 		sql.append(DefaultSqlHelper.fromSql(jpaModelEntity));
 		sql.append(DefaultSqlHelper.conditionIdSql(jpaModelEntity));
 		return sql.toString().trim();
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
 	}
 }

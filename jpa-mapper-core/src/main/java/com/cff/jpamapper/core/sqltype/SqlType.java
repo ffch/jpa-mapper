@@ -14,4 +14,10 @@ public interface SqlType {
 	String makeSql(JpaModelEntity jpaModelEntity, Method method);
 	
 	String makeShardingSql(JpaModelEntity jpaModelEntity, Method method);
+	
+	String makePageSortSql(JpaModelEntity jpaModelEntity, Method method);
+	
+	public default boolean hasConceal(){
+		return false;
+	}
 }

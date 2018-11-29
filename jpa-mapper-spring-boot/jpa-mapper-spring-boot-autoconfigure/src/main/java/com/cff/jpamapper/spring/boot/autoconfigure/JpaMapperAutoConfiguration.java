@@ -1,6 +1,7 @@
 package com.cff.jpamapper.spring.boot.autoconfigure;
 
 import org.apache.ibatis.binding.MapperRegistry;
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,10 @@ import com.cff.jpamapper.core.mapper.register.MappedStatementRegister;
 import com.cff.jpamapper.core.mapper.register.MapperRegister;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +40,15 @@ public class JpaMapperAutoConfiguration {
     private ApplicationContext applicationContext;
     
     @PostConstruct
-    public void addPageInterceptor() {
+    public void addPageInterceptor() throws SQLException {
         MapperScanner mapperScanner = new MapperScanner();
         for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
         	org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
+        	Environment environment = configuration.getEnvironment();
+        	DataSource dataSource = environment.getDataSource();
+        	DatabaseMetaData md = dataSource.getConnection().getMetaData();
+        	configuration.setDatabaseId(md.getDatabaseProductName());
+
         	MapperRegistry mapperRegistry = configuration.getMapperRegistry();
         	List<Class<?>> mappers = new ArrayList<>(mapperRegistry.getMappers());
         	MappedStatementRegister mappedStatementRegister = new MappedStatementRegister(configuration);

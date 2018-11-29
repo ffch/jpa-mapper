@@ -7,9 +7,9 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
 import com.cff.jpamapper.core.sql.ShardingSqlHelper;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sqltype.AbstractShardingSqlType;
 
-public class UpdateSqlType implements SqlType {
+public class UpdateSqlType extends AbstractShardingSqlType {
 
 	public static final UpdateSqlType INSTANCE = new UpdateSqlType();
 

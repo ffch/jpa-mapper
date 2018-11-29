@@ -12,8 +12,9 @@ public class JpaModelEntity {
 	String idColumn;
 	Field idField;
 	boolean isSharding = false;
+	boolean isPageSort = false;
 	ShardingEntity shardingEntity = null;
-
+	Class<?> targertEntity;
 	public String getTableName() {
 		return tableName;
 	}
@@ -86,4 +87,21 @@ public class JpaModelEntity {
 	public void setShardingEntity(ShardingEntity shardingEntity) {
 		this.shardingEntity = shardingEntity;
 	}
+
+	public boolean isPageSort() {
+		return isPageSort;
+	}
+
+	public void setPageSort(boolean isPageSort) {
+		this.isPageSort = isPageSort;
+	}
+
+	public Class<?> getTargertEntity() {
+		return targertEntity;
+	}
+
+	public void setTargertEntity(Class<?> targertEntity) {
+		this.targertEntity = targertEntity;
+	}
+	
 }

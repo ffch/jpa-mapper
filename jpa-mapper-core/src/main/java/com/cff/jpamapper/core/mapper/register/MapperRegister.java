@@ -17,6 +17,7 @@ import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.entity.ShardingEntity;
 import com.cff.jpamapper.core.exception.JpaMapperException;
 import com.cff.jpamapper.core.mapper.JMapper;
+import com.cff.jpamapper.core.mapper.PagingAndSortingMapper;
 import com.cff.jpamapper.core.mapper.SimpleShardingMapper;
 import com.cff.jpamapper.core.mapper.builder.JpaMapperAnnotationBuilder;
 import com.cff.jpamapper.core.util.ReflectUtil;
@@ -30,6 +31,8 @@ public class MapperRegister {
 	public static final int NO_MAPPER = -1;
 	public static final int CRUD_MAPPER = 0;
 	public static final int SHARDING_MAPPER = 2;
+	public static final int PAGESORT_MAPPER = 1;
+	
 	int type = NO_MAPPER;
 
 	public MapperRegister(Class<?> mapper, Configuration configuration) {
@@ -70,6 +73,8 @@ public class MapperRegister {
 			if (ReflectUtil.checkTypeFit(interfase, JMapper.class)) {
 				if (interfase.equals(SimpleShardingMapper.class)) {
 					return SHARDING_MAPPER;
+				} else if (interfase.equals(PagingAndSortingMapper.class)) {
+					return PAGESORT_MAPPER;
 				} else {
 					return CRUD_MAPPER;
 				}
@@ -82,6 +87,8 @@ public class MapperRegister {
 		JpaModelEntity jpaModelEntity = new JpaModelEntity();
 		if (type == SHARDING_MAPPER) {
 			jpaModelEntity.setSharding(true);
+		}else if(type == PAGESORT_MAPPER){
+			jpaModelEntity.setPageSort(true);
 		}
 		Class<?> entity = ReflectUtil.findGenericClass(mapper);
 		if (entity == null) {
@@ -89,7 +96,7 @@ public class MapperRegister {
 		}
 		Table tableAnnotation = entity.getAnnotation(Table.class);
 		String tableName = entity.getSimpleName();
-
+		jpaModelEntity.setTargertEntity(entity);
 		if (tableAnnotation != null) {
 			tableName = tableAnnotation.name();
 		}

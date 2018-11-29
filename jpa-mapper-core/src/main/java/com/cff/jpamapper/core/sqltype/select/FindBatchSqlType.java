@@ -6,9 +6,10 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
-public class FindBatchSqlType implements SqlType {
+public class FindBatchSqlType extends AbstractPrecisSqlType {
 
 	public static final FindBatchSqlType INSTANCE = new FindBatchSqlType();
 
@@ -28,10 +29,5 @@ public class FindBatchSqlType implements SqlType {
 		}
 		sql.append(" </script>");
 		return sql.toString().trim();
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
 	}
 }

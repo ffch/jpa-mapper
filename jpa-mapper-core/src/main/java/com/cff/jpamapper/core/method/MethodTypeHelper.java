@@ -18,6 +18,8 @@ import com.cff.jpamapper.core.sqltype.insert.SaveAllWithIdSqlType;
 import com.cff.jpamapper.core.sqltype.insert.SaveSqlType;
 import com.cff.jpamapper.core.sqltype.select.CountSqlType;
 import com.cff.jpamapper.core.sqltype.select.ExistsSqlType;
+import com.cff.jpamapper.core.sqltype.select.FindAllPageableSqlType;
+import com.cff.jpamapper.core.sqltype.select.FindAllSortedSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindAllSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindBatchSqlType;
 import com.cff.jpamapper.core.sqltype.select.FindBySqlType;
@@ -48,6 +50,9 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findAll", FindAllSqlType.INSTANCE);
 		mapperTypeMap.put("findBatch", FindBatchSqlType.INSTANCE);
 		mapperTypeMap.put("count", CountSqlType.INSTANCE);
+		
+		mapperTypeMap.put("findAllSorted", FindAllSortedSqlType.INSTANCE);
+		mapperTypeMap.put("findAllPageable", FindAllPageableSqlType.INSTANCE);
 
 		mapperTypeMap.put("delete", DeleteSqlType.INSTANCE);
 		mapperTypeMap.put("deleteBatch", DeleteBatchSqlType.INSTANCE);

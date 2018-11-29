@@ -6,9 +6,10 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.sql.DefaultSqlHelper;
+import com.cff.jpamapper.core.sqltype.AbstractPrecisSqlType;
 import com.cff.jpamapper.core.sqltype.SqlType;
 
-public class SaveAllWithIdSqlType implements SqlType {
+public class SaveAllWithIdSqlType extends AbstractPrecisSqlType {
 
 	public static final SaveAllWithIdSqlType INSTANCE = new SaveAllWithIdSqlType();
 
@@ -25,10 +26,5 @@ public class SaveAllWithIdSqlType implements SqlType {
 		sql.append(DefaultSqlHelper.valuesCollectionSql(jpaModelEntity, true));
 		sql.append(" </script>");
 		return sql.toString().trim();
-	}
-
-	@Override
-	public String makeShardingSql(JpaModelEntity jpaModelEntity, Method method) {
-		return null;
 	}
 }

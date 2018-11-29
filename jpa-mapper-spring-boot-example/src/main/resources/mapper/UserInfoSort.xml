@@ -1,0 +1,15 @@
+<!-- <?xml version="1.0" encoding="UTF-8" ?> -->
+<!-- <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" > -->
+<!-- <mapper namespace="com.cff.boot.dao.UserInfoSortDao" > -->
+<!--     <resultMap id="BaseResultMap" type="com.cff.boot.domain.Page" > -->
+<!--         <collection  property="userInfos"  ofType="com.cff.boot.domain.UserInfo"> -->
+<!--             <id property="userName" column="userName" /> -->
+<!--             <result column="mobile" jdbcType="VARCHAR" property="mobile" /> -->
+<!--             <result column="name" jdbcType="VARCHAR" property="name" /> -->
+<!--             <result column="passwd" jdbcType="VARCHAR" property="passwd" /> -->
+<!--             <result column="valid" jdbcType="VARCHAR" property="valid" /> -->
+<!--     	</collection> -->
+<!--     </resultMap> -->
+    
+ 
+<!-- </mapper> -->
