@@ -17,9 +17,10 @@ import com.cff.boot.domain.Page;
 import com.cff.boot.domain.UserInfo;
 import com.cff.boot.domain.UserInfoHis;
 import com.cff.boot.domain.UserRole;
-import com.cff.jpamapper.core.domain.Sort;
-import com.cff.jpamapper.core.domain.Sort.Direction;
-import com.cff.jpamapper.core.domain.Sort.Order;
+import com.cff.jpamapper.core.domain.page.Pageable;
+import com.cff.jpamapper.core.domain.page.Sort;
+import com.cff.jpamapper.core.domain.page.Sort.Direction;
+import com.cff.jpamapper.core.domain.page.Sort.Order;
 
 @RestController
 @RequestMapping("/sort")
@@ -50,6 +51,15 @@ public class SortRest {
 	public Page selectCount(){
 		
 		Page<UserInfo> page =  userInfoSortDao.selectCount(0,5);
+		return page;
+	}
+	
+	@RequestMapping("/findAllPageable")
+	public com.cff.jpamapper.core.domain.page.Page findAllPageable(){
+		Pageable pageable = new Pageable();
+		pageable.setPage(0);
+		pageable.setSize(5);
+		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
 		return page;
 	}
 }

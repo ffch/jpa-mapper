@@ -8,7 +8,7 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperSqlFactory {

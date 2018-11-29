@@ -8,15 +8,15 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 import com.cff.jpamapper.core.entity.JpaModelEntity;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperConcealedSqlFactory {
 
-	public static SqlSource createSqlSource(JpaModelEntity jpaModelEntity, Method originMethod, String methodName, SqlType sqlCommandType,
+	public static SqlSource createSqlSource(JpaModelEntity jpaModelEntity, String methodName, SqlType sqlCommandType,
 			Class<?> parameterTypeClass, LanguageDriver languageDriver, Configuration configuration) {
 		try {
-			String sql = "";
+			String sql = sqlCommandType.makeConcealedSql(jpaModelEntity);
 			
 			if (StringUtil.isEmpty(sql))
 				return null;

@@ -6,28 +6,29 @@ import java.util.Map;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 
-import com.cff.jpamapper.core.sqltype.IgnoreSqlType;
-import com.cff.jpamapper.core.sqltype.SqlType;
-import com.cff.jpamapper.core.sqltype.delete.DeleteAllSqlType;
-import com.cff.jpamapper.core.sqltype.delete.DeleteBatchSqlType;
-import com.cff.jpamapper.core.sqltype.delete.DeleteBySqlType;
-import com.cff.jpamapper.core.sqltype.delete.DeleteEntitySqlType;
-import com.cff.jpamapper.core.sqltype.delete.DeleteSqlType;
-import com.cff.jpamapper.core.sqltype.insert.SaveAllSqlType;
-import com.cff.jpamapper.core.sqltype.insert.SaveAllWithIdSqlType;
-import com.cff.jpamapper.core.sqltype.insert.SaveSqlType;
-import com.cff.jpamapper.core.sqltype.select.CountSqlType;
-import com.cff.jpamapper.core.sqltype.select.ExistsSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindAllPageableSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindAllSortedSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindAllSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindBatchSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindBySqlType;
-import com.cff.jpamapper.core.sqltype.select.FindOneSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindRangeSqlType;
-import com.cff.jpamapper.core.sqltype.select.FindSqlType;
-import com.cff.jpamapper.core.sqltype.update.UpdateAllSqlType;
-import com.cff.jpamapper.core.sqltype.update.UpdateSqlType;
+import com.cff.jpamapper.core.sql.type.IgnoreSqlType;
+import com.cff.jpamapper.core.sql.type.SqlType;
+import com.cff.jpamapper.core.sql.type.delete.DeleteAllSqlType;
+import com.cff.jpamapper.core.sql.type.delete.DeleteBatchSqlType;
+import com.cff.jpamapper.core.sql.type.delete.DeleteBySqlType;
+import com.cff.jpamapper.core.sql.type.delete.DeleteEntitySqlType;
+import com.cff.jpamapper.core.sql.type.delete.DeleteSqlType;
+import com.cff.jpamapper.core.sql.type.insert.SaveAllSqlType;
+import com.cff.jpamapper.core.sql.type.insert.SaveAllWithIdSqlType;
+import com.cff.jpamapper.core.sql.type.insert.SaveSqlType;
+import com.cff.jpamapper.core.sql.type.select.CountSqlType;
+import com.cff.jpamapper.core.sql.type.select.ExistsSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindAllPageableSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindAllSortedSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindAllSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindBatchSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindBySqlType;
+import com.cff.jpamapper.core.sql.type.select.FindOneSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindRangeSqlType;
+import com.cff.jpamapper.core.sql.type.select.FindSqlType;
+import com.cff.jpamapper.core.sql.type.select.conceal.PagedFindAllPageableSqlType;
+import com.cff.jpamapper.core.sql.type.update.UpdateAllSqlType;
+import com.cff.jpamapper.core.sql.type.update.UpdateSqlType;
 
 public class MethodTypeHelper {
 	public static final String SELECT = "findBy";
@@ -53,6 +54,7 @@ public class MethodTypeHelper {
 		
 		mapperTypeMap.put("findAllSorted", FindAllSortedSqlType.INSTANCE);
 		mapperTypeMap.put("findAllPageable", FindAllPageableSqlType.INSTANCE);
+		mapperTypeMap.put("pagedfindAllPageable", PagedFindAllPageableSqlType.INSTANCE);
 
 		mapperTypeMap.put("delete", DeleteSqlType.INSTANCE);
 		mapperTypeMap.put("deleteBatch", DeleteBatchSqlType.INSTANCE);

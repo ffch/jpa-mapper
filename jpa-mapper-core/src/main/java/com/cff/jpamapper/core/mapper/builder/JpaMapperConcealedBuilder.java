@@ -1,15 +1,14 @@
 package com.cff.jpamapper.core.mapper.builder;
 
-import java.awt.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 
 import org.apache.ibatis.annotations.ConstructorArgs;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.TypeDiscriminator;
+import org.apache.ibatis.binding.MapperMethod.ParamMap;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -29,9 +28,8 @@ import com.cff.jpamapper.core.key.JpaMapperKeyGenerator;
 import com.cff.jpamapper.core.method.MethodTypeHelper;
 import com.cff.jpamapper.core.mybatis.MapperAnnotationBuilder;
 import com.cff.jpamapper.core.sql.JpaMapperConcealedSqlFactory;
-import com.cff.jpamapper.core.sql.JpaMapperSqlFactory;
-import com.cff.jpamapper.core.sqltype.IgnoreSqlType;
-import com.cff.jpamapper.core.sqltype.SqlType;
+import com.cff.jpamapper.core.sql.type.IgnoreSqlType;
+import com.cff.jpamapper.core.sql.type.SqlType;
 import com.cff.jpamapper.core.util.StringUtil;
 
 public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
@@ -51,17 +49,17 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 	}
 
 	
-	public void parseConcealStatement(Method originMethod, String methodName) {
+	public void parseConcealStatement(String methodName) {
 		final String mappedStatementId = type.getName() + "." + methodName;
 		LanguageDriver languageDriver = assistant.getLanguageDriver(null);
 		SqlType jpaMapperSqlType = getJpaMapperSqlType(methodName);
 		if(jpaMapperSqlType instanceof IgnoreSqlType){
-			throw new JpaMapperException("未知的方法类型！");
+			throw new JpaMapperException("复合子查询创建失败！未知方法名：" + methodName);
 		}
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
-		Class<?> parameterTypeClass = getParameterType(originMethod);
+		Class<?> parameterTypeClass = ParamMap.class;
 
-		SqlSource sqlSource = JpaMapperConcealedSqlFactory.createSqlSource(jpaModelEntity, originMethod, methodName, jpaMapperSqlType,
+		SqlSource sqlSource = JpaMapperConcealedSqlFactory.createSqlSource(jpaModelEntity, methodName, jpaMapperSqlType,
 				parameterTypeClass, languageDriver, configuration);
 
 		StatementType statementType = StatementType.PREPARED;
@@ -69,7 +67,7 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 		boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 		String resultMapId = null;
 		if (isSelect) {
-			resultMapId = parseResultMap(originMethod, methodName);
+			resultMapId = parseResultMap(methodName);
 		}
 		boolean flushCache = !isSelect;
 		boolean useCache = isSelect;
@@ -77,15 +75,6 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 		KeyGenerator keyGenerator = NoKeyGenerator.INSTANCE;
 		String keyProperty = "id";
 		String keyColumn = null;
-
-		if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
-			JpaMapperKeyGenerator jpaMapperKeyGenerator = processGeneratedValue(mappedStatementId,
-					getParameterType(originMethod), languageDriver);
-			keyGenerator = jpaMapperKeyGenerator.getKeyGenerator();
-			keyProperty = jpaMapperKeyGenerator.getKeyProperty();
-			keyColumn = jpaMapperKeyGenerator.getKeyColumn();
-			;
-		}
 
 		assistant.addMappedStatement(mappedStatementId, sqlSource, statementType, sqlCommandType, null, null,
 				// ParameterMapID
@@ -97,22 +86,23 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 	
-	public String parseResultMap(Method originMethod, String methodName) {
+	private String parseResultMap(String methodName) {
 		Class<?> returnType = jpaModelEntity.getTargertEntity();
 		ConstructorArgs args = null;
 		Results results = null;
 		TypeDiscriminator typeDiscriminator = null;
-		String resultMapId = generateResultMapName(originMethod, methodName);
+		String resultMapId = generateResultMapName(methodName);
 		applyResultMap(resultMapId, returnType, argsIf(args), resultsIf(results), typeDiscriminator);
 		return resultMapId;
 	}
 	
-	public String generateResultMapName(Method originMethod, String methodName) {
+	public String generateResultMapName(String methodName) {		
 		StringBuilder suffix = new StringBuilder();
-		for (Class<?> c : originMethod.getParameterTypes()) {
-			suffix.append("-");
-			suffix.append(c.getSimpleName());
-		}
+		suffix.append("-");
+		suffix.append("int");
+		suffix.append("-");
+		suffix.append("int");
+		
 		if (suffix.length() < 1) {
 			suffix.append("-void");
 		}

@@ -32,7 +32,7 @@ public interface UserInfoSortDao extends PagingAndSortingMapper<UserInfo, String
 	        "FROM user_info",
 	        "limit #{size} OFFSET #{page}",
 	   "</script>"})
-	List<UserInfo> selectPage(@Param("page")int page, @Param("size")int size);
+	List<UserInfo> selectPage(int page, int size);
 	
 	@Select({
 		"<script>",
