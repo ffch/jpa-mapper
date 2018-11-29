@@ -43,6 +43,12 @@ public abstract class AbstractPageSortSqlType implements SqlType {
 		sizeMethodParameters.setType(int.class);
 		list.add(sizeMethodParameters);
 		
+		MethodParameters sortMethodParameters = new MethodParameters();
+		sortMethodParameters.setColumn(PageConstant.SORT);
+		sortMethodParameters.setProperty(PageConstant.SORT);
+		sortMethodParameters.setType(String.class);
+		list.add(sortMethodParameters);
+		
 		return list;
 	}
 }

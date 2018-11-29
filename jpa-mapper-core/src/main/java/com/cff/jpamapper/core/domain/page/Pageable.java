@@ -3,7 +3,7 @@ package com.cff.jpamapper.core.domain.page;
 public class Pageable {
 	private int page;
 	private int size;
-	
+	private String sort = "";
 	public int getPageSize() {
 		return size;
 	}
@@ -37,5 +37,11 @@ public class Pageable {
 		return size;
 	}
 	
-	
+	public void setSort(Sort sort){
+		this.sort = sort.toSort();
+	}
+
+	public String getSort() {
+		return sort;
+	}
 }

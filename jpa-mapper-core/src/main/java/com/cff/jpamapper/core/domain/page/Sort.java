@@ -33,6 +33,22 @@ public class Sort {
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
+	
+	public String toSort(){
+		StringBuilder sql = new StringBuilder();
+		sql.append(" ");
+		if(orders != null && orders.size() > 0){
+			for(Order order : orders){
+				sql.append(order.property);
+				sql.append(" ");
+				sql.append(order.direction.name());
+				sql.append(",");
+			}
+			sql.deleteCharAt(sql.length() - 1);
+		}
+		
+		return sql.toString().trim();
+	}
 
 	public static class Order{
 		private Direction direction;

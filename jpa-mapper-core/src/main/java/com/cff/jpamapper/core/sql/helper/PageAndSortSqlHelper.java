@@ -1,15 +1,12 @@
 package com.cff.jpamapper.core.sql.helper;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.cff.jpamapper.core.domain.page.PageConstant;
 import com.cff.jpamapper.core.entity.JpaModelEntity;
 import com.cff.jpamapper.core.entity.MethodParameters;
 import com.cff.jpamapper.core.helper.DialectTypeHelper;
 import com.cff.jpamapper.core.sql.dialect.Dialect;
-import com.cff.jpamapper.core.util.StringUtil;
 
 public class PageAndSortSqlHelper extends DefaultSqlHelper {
 
@@ -26,10 +23,12 @@ public class PageAndSortSqlHelper extends DefaultSqlHelper {
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT count(1) ");
 		sql.append(PageConstant.COUNT);
-		sql.append(", ${page} ");
+		sql.append(", #{page} ");
 		sql.append(PageConstant.PAGE);
-		sql.append(", ${size} ");
+		sql.append(", #{size} ");
 		sql.append(PageConstant.SIZE);
+		sql.append(", #{sort} ");
+		sql.append(PageConstant.SORT);
         return sql.toString();
 	}
 	
@@ -40,8 +39,8 @@ public class PageAndSortSqlHelper extends DefaultSqlHelper {
 		sql.append(PageConstant.COUNT);
 		
 		int index = 1;
-		if(methodParametersList.size() > 2){
-			for(int i = 2;i<methodParametersList.size();i++){
+		if(methodParametersList.size() > PageConstant.PAGE_START){
+			for(int i = PageConstant.PAGE_START;i<methodParametersList.size();i++){
 				MethodParameters item = methodParametersList.get(i);
 				sql.append(", #{param");
 				sql.append(index);
@@ -51,15 +50,16 @@ public class PageAndSortSqlHelper extends DefaultSqlHelper {
 			}
 		}
 		
-		for(int i = 0;i<2;i++){
+		for(int i = 0;i<PageConstant.PAGE_START;i++){
 			MethodParameters item = methodParametersList.get(i);
-			sql.append(", ${param");
+			sql.append(", #{param");
 			sql.append(index);
 			sql.append(".");
 			sql.append(item.getProperty());
 			sql.append("} ");
 			sql.append(item.getProperty());
 		}
+		
 		
         return sql.toString();
 	}
@@ -68,10 +68,10 @@ public class PageAndSortSqlHelper extends DefaultSqlHelper {
 		List<MethodParameters> methodParametersList = jpaModelEntity.getMethodParametersList();
 		
 		StringBuilder sql = new StringBuilder();
-		if(methodParametersList.size() > 2){
+		if(methodParametersList.size() > PageConstant.PAGE_START){
 			sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
 			int index = 1;
-			for(int i = 2;i<methodParametersList.size();i++){
+			for(int i = PageConstant.PAGE_START;i<methodParametersList.size();i++){
 				MethodParameters item = methodParametersList.get(i);
 				sql.append("AND ");
 				sql.append(item.getColumn());

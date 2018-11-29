@@ -37,12 +37,12 @@ import com.cff.jpamapper.core.sql.type.update.UpdateSqlType;
 public class MethodTypeHelper {
 	public static final String SELECT = "findBy";
 	public static final String PAGE = "pageBy";
-	
+
 	public static final String UPDATE = "updateBy";
 	public static final String DELETE = "deleteBy";
 	public static final String INSERT = "saveBy";
 
-	public static Map<String, SqlType> mapperTypeMap = new HashMap<>();
+	private static Map<String, SqlType> mapperTypeMap = new HashMap<>();
 
 	public static final String SELECT_REG = "findBy[a-zA-z]*|findOne|exists|findAll|count";
 	public static final String UPDATE_REG = "updateBy[a-zA-z]*";
@@ -57,12 +57,11 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findAll", FindAllSqlType.INSTANCE);
 		mapperTypeMap.put("findBatch", FindBatchSqlType.INSTANCE);
 		mapperTypeMap.put("count", CountSqlType.INSTANCE);
-		
+
 		mapperTypeMap.put("findAllSorted", FindAllSortedSqlType.INSTANCE);
 		mapperTypeMap.put("findAllPageable", FindAllPageableSqlType.INSTANCE);
 		mapperTypeMap.put("pagedfindAllPageable", PagedFindAllPageableSqlType.INSTANCE);
 		mapperTypeMap.put("pagedpageBy", PagedPageBySqlType.INSTANCE);
-
 
 		mapperTypeMap.put("delete", DeleteSqlType.INSTANCE);
 		mapperTypeMap.put("deleteBatch", DeleteBatchSqlType.INSTANCE);
@@ -77,9 +76,13 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("updateAll", UpdateAllSqlType.INSTANCE);
 	}
 
+	public static void addSqlType(String key, SqlType value) {
+		mapperTypeMap.put(key, value);
+	}
+
 	public static void main(String args[]) {
 		Field fields[] = MethodTypeHelper.class.getDeclaredFields();
-		for(Field item : fields){
+		for (Field item : fields) {
 			Class<?> cls1 = item.getClass();
 			Class<?> cls2 = item.getType();
 			Class<?> cls3 = item.getDeclaringClass();

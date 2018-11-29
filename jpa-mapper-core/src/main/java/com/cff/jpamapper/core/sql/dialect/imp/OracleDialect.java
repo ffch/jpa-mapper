@@ -30,9 +30,9 @@ public class OracleDialect implements Dialect{
 		sql.append(PageAndSortSqlHelper.selectEntitySql(jpaModelEntity));
 		sql.append(PageAndSortSqlHelper.fromSql(jpaModelEntity));
 		List<MethodParameters> methodParametersList = jpaModelEntity.getMethodParametersList();
-		if(methodParametersList.size() > 2){
+		if(methodParametersList.size() > PageConstant.PAGE_START){
 			sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
-			for(int i = 2;i<methodParametersList.size();i++){
+			for(int i = PageConstant.PAGE_START;i<methodParametersList.size();i++){
 				MethodParameters item = methodParametersList.get(i);
 				sql.append("AND ");
 				sql.append(item.getColumn());
@@ -41,7 +41,12 @@ public class OracleDialect implements Dialect{
 				sql.append("} ");
 			}
 			sql.append("</trim>");
-		}		
+		}
+		sql.append(" <if test='");
+		sql.append(PageConstant.SORT);
+		sql.append(" != null'> order by ${");
+		sql.append(PageConstant.SORT);
+		sql.append("} </if> ");
 		
 		sql.append(" ) TMP_PAGE)");
 		sql.append(" WHERE ROW_ID <= #{endNum}");

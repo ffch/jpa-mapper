@@ -79,11 +79,37 @@ public class SortRest {
 		return page;
 	}
 	
+	@RequestMapping("/findAllPageableSort")
+	public com.cff.jpamapper.core.domain.page.Page findAllPageableSort(){
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setSize(5);
+		Order order = new Order(Direction.ASC, "mobile");
+		Order order1 = new Order(Direction.ASC, "userName");
+		Sort sort = new Sort(order, order1);
+		pageable.setSort(sort);
+		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
+		return page;
+	}
+	
 	@RequestMapping("/findPageable")
 	public com.cff.jpamapper.core.domain.page.Page findPageable(){
 		Pageable pageable = new Pageable();
 		pageable.setPage(1);
 		pageable.setSize(5);
+		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.pageByPasswd("123", pageable);
+		return page;
+	}
+	
+	@RequestMapping("/findPageableSort")
+	public com.cff.jpamapper.core.domain.page.Page findPageableSort(){
+		Pageable pageable = new Pageable();
+		pageable.setPage(1);
+		pageable.setSize(5);
+		Order order = new Order(Direction.ASC, "mobile");
+		Order order1 = new Order(Direction.ASC, "userName");
+		Sort sort = new Sort(order, order1);
+		pageable.setSort(sort);
 		com.cff.jpamapper.core.domain.page.Page<UserInfo> page =  userInfoSortDao.pageByPasswd("123", pageable);
 		return page;
 	}
