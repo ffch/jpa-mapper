@@ -36,7 +36,7 @@ v1.2
  **springboot启动：** 
 ```xml
 <dependency>
-    <groupId>com.cff</groupId>
+    <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
     <version>1.2</version>
 </dependency>
@@ -45,7 +45,7 @@ v1.2
  **非AutoConfiguration:** 
 ```xml
 <dependency>
-    <groupId>com.cff</groupId>
+    <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-core</artifactId>
     <version>1.2</version>
 </dependency>
