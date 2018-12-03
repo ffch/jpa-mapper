@@ -1,5 +1,7 @@
 [![License](http://img.shields.io/:license-apache-blue.svg "2.0")](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![JDK 1.8](https://img.shields.io/badge/JDK-1.8-green.svg "JDK 1.8")]()
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.ffch/jpa-mapper-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.ffch%22%20AND%20a:%22jpa-mapper-core%22)
+
 
 ## JpaMapper项目简介
 
@@ -10,6 +12,10 @@
 那就用JpaMapper吧！JpaMapper是尽量按照JPA hibernate的书写风格，对mybatis进行封装，是CRUD操作更加简单易用，免于不断写sql。
 
 JpaMapper以动态生成sql替换手动生成sql的过程，并根据注解生成sqlsource的过程去生成sql，并将sql交给mybatis去管理，原理上和自己写sql是一致的，并不会去替换mybatis的底层实现。因为不用担心无法操控，任何可能出现的问题，只需要debug下查看生成的sql和预期的是否一致即可。
+
+## [Gitee](https://gitee.com/ffch/JpaMapper)
+## [Github](https://github.com/ffch/jpa-mapper)
+
 
 ## 主要功能
 v1.0.0:
@@ -33,6 +39,9 @@ v1.2
  3. 支持pageBy分页功能，功能都与jpa hibernate的相似
 
 ## 启动说明
+jar包已经上传到maven中央仓库。
+https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
+
  **springboot启动：** 
 ```xml
 <dependency>
