@@ -115,13 +115,13 @@ public class JpaMapperConcealedBuilder extends MapperAnnotationBuilder {
 	public SqlType getJpaMapperSqlType(String method) {
 		return MethodTypeHelper.getSqlCommandType(method);
 	}
-
+	
 	/**
 	 * 处理 GeneratedValue 注解
-	 *
-	 * @param entityTable
-	 * @param entityColumn
-	 * @param generatedValue
+	 * @param baseStatementId baseStatementId
+	 * @param parameterTypeClass parameterTypeClass
+	 * @param languageDriver languageDriver
+	 * @return JpaMapperKeyGenerator
 	 */
 	protected JpaMapperKeyGenerator processGeneratedValue(String baseStatementId, Class<?> parameterTypeClass,
 			LanguageDriver languageDriver) {

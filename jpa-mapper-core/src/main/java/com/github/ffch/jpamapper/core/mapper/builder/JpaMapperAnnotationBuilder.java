@@ -205,10 +205,10 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
 	/**
 	 * 处理 GeneratedValue 注解
-	 *
-	 * @param entityTable
-	 * @param entityColumn
-	 * @param generatedValue
+	 * @param baseStatementId baseStatementId
+	 * @param parameterTypeClass parameterTypeClass
+	 * @param languageDriver languageDriver
+	 * @return JpaMapperKeyGenerator
 	 */
 	protected JpaMapperKeyGenerator processGeneratedValue(String baseStatementId, Class<?> parameterTypeClass,
 			LanguageDriver languageDriver) {

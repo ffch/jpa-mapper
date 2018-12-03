@@ -10,9 +10,10 @@ public class ShardingSqlHelper extends SqlHelper {
 
 	/**
 	 * 表名选择绑定方法
-	 * @param jpaModelEntity
-	 * @param isSole
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @param isSole true: for one  false:for muti
+	 * @param paramPrefix 参数前缀
+	 * @return sql语句
 	 */
 	public static String bindSql(JpaModelEntity jpaModelEntity, boolean isSole, String paramPrefix) {
 		ShardingEntity shardingEntity = jpaModelEntity.getShardingEntity();
@@ -47,8 +48,9 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 多表查询语句
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @param hasCondition hasCondition
+	 * @return sql语句
 	 */
 	public static String shardingSelectSql(JpaModelEntity jpaModelEntity, boolean hasCondition) {
 		StringBuilder sql = new StringBuilder();		
@@ -73,8 +75,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 精确表查询的where条件
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String conditionSoleSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -87,8 +89,9 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 多表查询的where条件
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @param hasCondition hasCondition
+	 * @return sql语句
 	 */
 	public static String conditionRangeSql(JpaModelEntity jpaModelEntity, boolean hasCondition) {
 		StringBuilder sql = new StringBuilder();
@@ -103,9 +106,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 获取实体的where语句，只获取Column注解的字段
-	 * 
-	 * @param entity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	private static String conditionEntitySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -131,8 +133,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 分表字段的查询条件
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	private static String conditionShardingKeySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -145,8 +147,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 分表字段的范围查询条件
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	private static String conditionRangeShardingKeySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -154,12 +156,11 @@ public class ShardingSqlHelper extends SqlHelper {
 		sql.append(" between #{start} and #{end} ");
 		return sql.toString();
 	}
-
+	
 	/**
 	 * 获取实体的select语句，只获取Column注解的字段
-	 * 
-	 * @param entity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String selectEntitySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -188,7 +189,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 精确表查询
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String fromSoleSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -202,7 +204,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 多表查询
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String fromRangeSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -216,8 +219,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 插入语句	
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String insertSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -244,8 +247,8 @@ public class ShardingSqlHelper extends SqlHelper {
 	
 	/**
 	 * 赋值语句
-	 * @param jpaModelEntity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String valuesSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();

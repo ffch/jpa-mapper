@@ -9,7 +9,7 @@ public abstract class SqlHelper {
 	/**
 	 * 删除的sql语句
 	 * 
-	 * @return
+	 * @return sql语句
 	 */
 	public static String deleteSql() {
 		StringBuilder sql = new StringBuilder();
@@ -21,7 +21,7 @@ public abstract class SqlHelper {
 	/**
 	 * count的sql语句
 	 * 
-	 * @return
+	 * @return sql语句
 	 */
 	public static String selectCountSql() {
 		StringBuilder sql = new StringBuilder();
@@ -34,7 +34,7 @@ public abstract class SqlHelper {
 	/**
 	 * 判断是否存在的sql语句
 	 * 
-	 * @return
+	 * @return sql语句
 	 */
 	public static String selectExistSql() {
 		StringBuilder sql = new StringBuilder();

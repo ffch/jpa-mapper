@@ -38,10 +38,8 @@ public class DefaultSqlHelper extends SqlHelper{
 
 	/**
 	 * 单id条件
-	 * 
-	 * @param entity
-	 * @param method
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String conditionIdSql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -54,13 +52,12 @@ public class DefaultSqlHelper extends SqlHelper{
 
 		return sql.toString();
 	}
-
+	
 	/**
 	 * 多id用
-	 * 
-	 * @param entity
-	 * @param method
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @param method 执行方法
+	 * @return sql语句
 	 */
 	public static String conditionIdsSql(JpaModelEntity jpaModelEntity, Method method) {
 		int count = method.getParameterCount();
@@ -81,12 +78,11 @@ public class DefaultSqlHelper extends SqlHelper{
 
 		return sql.toString();
 	}
-
+	
 	/**
 	 * 获取实体的where语句，只获取Column注解的字段
-	 * 
-	 * @param entity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String conditionEntitySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();
@@ -111,12 +107,11 @@ public class DefaultSqlHelper extends SqlHelper{
 		sql.append("</trim>");
 		return sql.toString();
 	}
-
+	
 	/**
 	 * 获取实体的select语句，只获取Column注解的字段
-	 * 
-	 * @param entity
-	 * @return
+	 * @param jpaModelEntity jpaModelEntity
+	 * @return sql语句
 	 */
 	public static String selectEntitySql(JpaModelEntity jpaModelEntity) {
 		StringBuilder sql = new StringBuilder();

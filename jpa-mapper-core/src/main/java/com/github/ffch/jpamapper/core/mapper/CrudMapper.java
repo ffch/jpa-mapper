@@ -8,57 +8,45 @@ import org.apache.ibatis.annotations.Param;
 public interface CrudMapper<T, ID extends Serializable> extends JMapper<T, ID>{
 	
 	/**
-	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
-	 * entity instance completely.
-	 * 
-	 * @param entity
-	 * @return the saved entity
+	 * 保存实体
+	 * @param entity 实体
+	 * @return 保存成功数
 	 */
-	<S extends T> int save(S entity);
+	int save(T entity);
 
 	/**
-	 * Saves all given entities. no id save 
-	 * <p>for single save the {@link save} can detect the id and auto save
-	 * <p>to save Collection with id, define {@link saveAllWithId}
-	 * @param entities
-	 * @return the saved entities
-	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
+	 * 批量保存
+	 * @param entities 实体列表
+	 * @return 成功数
 	 */
-	<S extends T> int saveAll(Collection<S> entities);
+	int saveAll(Collection<T> entities);
 	
 	/**
-	 * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
-	 * entity instance completely.
-	 * 
-	 * @param entity
-	 * @return the saved entity
+	 * 更新实体
+	 * @param entity 实体，不为null的全部更新
+	 * @return 成功数
 	 */
-	<S extends T> int update(@Param("object") S entity);
+	int update(@Param("object") T entity);
 	
 	/**
-	 * update all given entities.
-	 * 
-	 * @param entities
-	 * @return the saved entities
-	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
+	 * 更新所有
+	 * @param entity 更新实体，不为null的全部更新
+	 * @param ids id列表
+	 * @return 更新数量
 	 */
-	<S extends T> int updateAll(@Param("object") S entity, @Param("list") Collection<ID> ids);
+	int updateAll(@Param("object") T entity, @Param("list") Collection<ID> ids);
 
 	/**
-	 * Retrieves an entity by its id.
-	 * 
-	 * @param id must not be {@literal null}.
-	 * @return the entity with the given id or {@literal null} if none found
-	 * @throws IllegalArgumentException if {@code id} is {@literal null}
+	 * 根据id查询
+	 * @param id 主键
+	 * @return 实体
 	 */
 	T findOne(@Param("id") ID id);
 
 	/**
-	 * Returns whether an entity with the given id exists.
-	 * 
-	 * @param id must not be {@literal null}.
-	 * @return true if an entity with the given id exists, {@literal false} otherwise
-	 * @throws IllegalArgumentException if {@code id} is {@literal null}
+	 * 根据id判断是否存在
+	 * @param id 主键
+	 * @return true 存在 false 不存在
 	 */
 	boolean exists(@Param("id") ID id);
 
@@ -72,8 +60,8 @@ public interface CrudMapper<T, ID extends Serializable> extends JMapper<T, ID>{
 	/**
 	 * Returns all instances of the type with the given IDs.
 	 * 
-	 * @param ids
-	 * @return
+	 * @param ids id列表
+	 * @return 实体列表
 	 */
 	Collection<T> findBatch(@Param("list") Collection<ID> ids);
 
@@ -95,21 +83,22 @@ public interface CrudMapper<T, ID extends Serializable> extends JMapper<T, ID>{
 	/**
 	 * Deletes a given entity.
 	 * 
-	 * @param entity
+	 * @param entity 实体
 	 * @throws IllegalArgumentException in case the given entity is {@literal null}.
+	 * @return 删除数量
 	 */
 	int deleteEntity(@Param("object") T entity);
 
 	/**
-	 * Deletes the given entities.
-	 * 
-	 * @param entities
-	 * @throws IllegalArgumentException in case the given {@link Iterable} is {@literal null}.
+	 * 批量删除
+	 * @param ids id列表
+	 * @return 成功数
 	 */
 	int deleteBatch(@Param("list") Collection<ID> ids);
 
 	/**
-	 * Deletes all entities managed by the repository.
+	 * 批量删除
+	 * @return 成功数
 	 */
 	int deleteAll();
 }

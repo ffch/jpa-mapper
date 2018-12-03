@@ -10,8 +10,8 @@ public class ReflectUtil {
 	/**
 	 * 判断是不是基础类
 	 * 
-	 * @param type
-	 * @return
+	 * @param type class 
+	 * @return true 基础类
 	 */
 	public static boolean isGeneralClass(Class<?> type) {
 		if (type.isInterface() || type.isArray() || type.isEnum() || isCollection(type) || isJavaClass(type)) {
@@ -23,8 +23,8 @@ public class ReflectUtil {
 	/**
 	 * 判断是不是集合的实现类
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param type class
+	 * @return true集合
 	 */
 	public static boolean isCollection(Class<?> type) {
 		return Collection.class.isAssignableFrom(type);
@@ -33,8 +33,8 @@ public class ReflectUtil {
 	/**
 	 * 判断是不是Iterable的实现类
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param type class
+	 * @return true：是Iterable
 	 */
 	public static boolean isIterable(Class<?> type) {
 		return Iterable.class.isAssignableFrom(type);
@@ -43,8 +43,8 @@ public class ReflectUtil {
 	/**
 	 * 是不是java基础类
 	 * 
-	 * @param field
-	 * @return
+	 * @param type class
+	 * @return true:java基础类
 	 */
 	public static boolean isJavaClass(Class<?> type) {
 		boolean isBaseClass = false;
@@ -69,7 +69,7 @@ public class ReflectUtil {
 	 * 检测类型是否相符
 	 * @param src 子类
 	 * @param dst 父类
-	 * @return true类型相符
+	 * @return true：类型相符
 	 */
 	public static boolean checkTypeFit(Class<?> src, Class<?> dst){
 		if(dst.isAssignableFrom(src))return true;
@@ -78,8 +78,8 @@ public class ReflectUtil {
 	
 	/**
 	 * 获取泛型类型
-	 * @param type
-	 * @return
+	 * @param type class
+	 * @return 泛型类型
 	 */
 	public static Class<?> findGenericClass(Class<?> type){
 		Type[] types = type.getGenericInterfaces();

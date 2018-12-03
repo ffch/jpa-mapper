@@ -9,7 +9,7 @@
 		<version>1.2</version>
 	</parent>
 	<artifactId>jpa-mapper-core</artifactId>
-	<name>JpaMapper-core</name>
+	<name>jpa-mapper-core</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
