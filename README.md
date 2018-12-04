@@ -67,6 +67,9 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 ```
 
 ## 使用说明
+
+详细使用说明可以在wiki里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
+
 **快速启动：**
 
 基于mybatis注解方案，需要继承CrudMapper<T, ID>, CrudMapper中定义的方法可以直接使用，查询方法支持findBy + 字段名（And）查询。删除方法支持deleteBy + 字段名（And）删除。
