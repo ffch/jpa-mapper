@@ -9,9 +9,7 @@ import java.util.List;
  * The persistent class for the user_info database table.
  * 
  */
-@Entity
 @Table(name="user_info")
-@NamedQuery(name="UserInfo.findAll", query="SELECT u FROM UserInfo u")
 public class UserInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,9 +28,6 @@ public class UserInfo implements Serializable {
 
 	@Column(length=2)
 	private String valid;
-
-	//bi-directional many-to-one association to UserRole
-	
 
 	public UserInfo() {
 	}

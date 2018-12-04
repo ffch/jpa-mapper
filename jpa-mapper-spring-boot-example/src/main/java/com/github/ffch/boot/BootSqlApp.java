@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootApplication(scanBasePackages = "com.cff.boot")
+@SpringBootApplication()
 public class BootSqlApp {
 
 	public static void main(String[] args) {

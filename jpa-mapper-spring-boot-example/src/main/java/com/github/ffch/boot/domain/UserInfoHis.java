@@ -15,9 +15,7 @@ import java.util.Map;
  * The persistent class for the user_info database table.
  * 
  */
-@Entity
 @Table(name="user_info_his")
-@NamedQuery(name="UserInfo.findAll", query="SELECT u FROM UserInfo u")
 public class UserInfoHis implements Serializable {
 	private static final long serialVersionUID = 1L;
 
