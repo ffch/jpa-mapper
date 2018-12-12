@@ -206,7 +206,7 @@ public class DefaultSqlHelper extends SqlHelper{
 		valuesSql.append(jpaModelEntity.getIdName());
 		valuesSql.append(" != null'> ");
 		valuesSql.append(" #{");
-		valuesSql.append(jpaModelEntity.getIdColumn());
+		valuesSql.append(jpaModelEntity.getIdName());
 		valuesSql.append("}, </if> ");
 
 		for (Map.Entry<String, String> entry : jpaModelEntity.getFieldMap().entrySet()) {
@@ -220,7 +220,7 @@ public class DefaultSqlHelper extends SqlHelper{
 			valuesSql.append(entry.getKey());
 			valuesSql.append(" != null'> ");
 			valuesSql.append(" #{");
-			valuesSql.append(entry.getValue());
+			valuesSql.append(entry.getKey());
 			valuesSql.append("}, </if> ");
 		}
 
