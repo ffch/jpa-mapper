@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.github.ffch</groupId>
 		<artifactId>jpa-mapper</artifactId>
-		<version>1.2</version>
+		<version>1.2.1</version>
 	</parent>
 	<artifactId>jpa-mapper-spring-boot</artifactId>
 	<name>jpa-mapper-spring-boot</name>
@@ -14,6 +14,14 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<mybatis.version>3.4.6</mybatis.version>
+		<mybatis-spring.version>1.3.2</mybatis-spring.version>
+		<mybatis-spring-boot.version>1.3.0</mybatis-spring-boot.version>
+		<spring-boot.version>2.0.0.RELEASE</spring-boot.version>
+		<jpa.version>1.0</jpa.version>
+		<jpa-mapper.version>1.2.1</jpa-mapper.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -28,6 +36,11 @@
 				<version>${mybatis-spring-boot.version}</version>
 			</dependency>
 			<dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis</artifactId>
 				<version>${mybatis.version}</version>
@@ -40,17 +53,17 @@
 			<dependency>
 				<groupId>com.github.ffch</groupId>
 				<artifactId>jpa-mapper-spring-boot-autoconfigure</artifactId>
-				<version>${project.version}</version>
+				<version>${jpa-mapper.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.ffch</groupId>
 				<artifactId>jpa-mapper-spring-boot-starter</artifactId>
-				<version>${project.version}</version>
+				<version>${jpa-mapper.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.ffch</groupId>
 				<artifactId>jpa-mapper-core</artifactId>
-				<version>${project.version}</version>
+				<version>${jpa-mapper.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>

@@ -37,6 +37,10 @@ v1.2
  1. 部分逻辑调整优化
  2. 增加分页功能、排序功能，因分页写法的不同，暂时只支持mysql和oracle
  3. 支持pageBy分页功能，功能都与jpa hibernate的相似
+ 
+v1.2.1
+
+ 1. 修复了jar引入时的bug
 
 ## 启动说明
 jar包已经上传到maven中央仓库。
@@ -47,7 +51,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
 <dependency>
     <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
@@ -56,7 +60,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
 <dependency>
     <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-core</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
