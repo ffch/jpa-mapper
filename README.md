@@ -42,6 +42,10 @@ v1.2.1
 
  1. 修复了jar引入时的bug
 
+v1.2.2
+
+ 1. 修复了inseret操作的字段对应bug
+
 ## 启动说明
 jar包已经上传到maven中央仓库。
 https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
@@ -51,7 +55,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
 <dependency>
     <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
@@ -60,7 +64,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
 <dependency>
     <groupId>com.github.ffch</groupId>
     <artifactId>jpa-mapper-core</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
