@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.github.ffch</groupId>
 		<artifactId>jpa-mapper</artifactId>
-		<version>1.2.1</version>
+		<version>1.2.2</version>
 	</parent>
 	<artifactId>jpa-mapper-core</artifactId>
 	<name>jpa-mapper-core</name>
