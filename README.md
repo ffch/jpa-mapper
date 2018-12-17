@@ -15,6 +15,7 @@ JpaMapper以动态生成sql替换手动生成sql的过程，并根据注解生�
 
 ## [Gitee](https://gitee.com/ffch/JpaMapper)
 ## [Github](https://github.com/ffch/jpa-mapper)
+## [Get Started](https://www.pomit.cn/jpa-mapper/#/)
 
 
 ## 主要功能
@@ -76,7 +77,7 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 
 ## 使用说明
 
-详细使用说明可以在wiki里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
+详细使用说明可以在[项目主页](https://www.pomit.cn/jpa-mapper/#/)里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
 
 **快速启动：**
 
