@@ -46,26 +46,41 @@ v1.2.1
 v1.2.2
 
  1. 修复了inseret操作的字段对应bug
+ 
+ v2.0
 
-## 启动说明
+ 1. groupId更改为cn.pomit，2.0版本以后不再用com.github.ffch。
+ 2. 新增sortBy功能，可以根据And分割字段名进行排序。
+
+## 使用说明
 jar包已经上传到maven中央仓库。
-https://search.maven.org/search?q=jpa-mapper ，groupId为com.github.ffch。
+https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
+详细使用说明可以在[项目主页](https://www.pomit.cn/jpa-mapper/#/)里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
 
+### Maven依赖
  **springboot启动：** 
 ```xml
 <dependency>
-    <groupId>com.github.ffch</groupId>
+	<groupId>org.mybatis.spring.boot</groupId>
+	<artifactId>mybatis-spring-boot-starter</artifactId>
+</dependency>
+<dependency>
+    <groupId>cn.pomit</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-    <version>1.2.2</version>
+    <version>2.0</version>
 </dependency>
 ```
 
  **非AutoConfiguration:** 
 ```xml
 <dependency>
-    <groupId>com.github.ffch</groupId>
+	<groupId>org.mybatis.spring.boot</groupId>
+	<artifactId>mybatis-spring-boot-starter</artifactId>
+</dependency>
+<dependency>
+    <groupId>cn.pomit</groupId>
     <artifactId>jpa-mapper-core</artifactId>
-    <version>1.2.2</version>
+    <version>2.0</version>
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
@@ -75,27 +90,35 @@ MapperScanner mapperScanner = new MapperScanner();
 mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 ```
 
-## 使用说明
+### Mapper种类
 
-详细使用说明可以在[项目主页](https://www.pomit.cn/jpa-mapper/#/)里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
+1. CrudMapper简单的增删改查Mapper，继承CrudMapper可以实现简单的CRUD。
+2. SimpleShardingMapper分表Mapper，继承SimpleShardingMapper可以实现分表功能
+3. PagingAndSortingMapper分页Mapper，继承PagingAndSortingMapper可以实现分页功能。
 
-**快速启动：**
+Mapper的泛型要指明实体类和主键
 
-基于mybatis注解方案，需要继承CrudMapper<T, ID>, CrudMapper中定义的方法可以直接使用，查询方法支持findBy + 字段名（And）查询。删除方法支持deleteBy + 字段名（And）删除。
+### 增删改查CrudMapper
 
-这里获取字段的方式是根据接口中泛型类的字段去解析的，字段必须加上@Column注解，Id字段加上@Id可以不加@Column，这里没实现那么多功能，原因是个人觉得没多大必要，支持的越多，项目越臃肿，这就偏离了选择mybatis的初衷
+1. 新建实体，实体字段必须加上@Column注解，Id字段加上@Id可以不加@Column。类注解@Table必须要指定表名。
+2. 新建Mapper，继承CrudMapper<T, ID>，Mapper上要加上mybatis的Mapper注解。
+3. CrudMapper中定义的方法可以直接使用。
+4. 查询方法支持findBy + 字段名（And）查询。删除方法支持deleteBy + 字段名（And）删除。
 
-**主键策略：**
+详细使用方法可以在[JpaMapper-CrudMapper](https://www.pomit.cn/jpa-mapper/#/?id=_31-crud)里查看
+
+
+### 主键策略
 
 1. @GeneratedValue(generator="JDBC"), 使用自增策略，对应mybatis的Jdbc3KeyGenerator
-2. @GeneratedValue除generator="JDBC"外，支持@SelectKey注解（非mybatis的注解，但和mybatis的注解一致，这里是为了将SelectKey注解扩展到字段上）添加到字段上，和mybatis的@SelectKey注解功能一致，可以自定义主键策略。
+2. @GeneratedValue除generator="JDBC"外，支持@SelectKey注解（非mybatis的注解，但和mybatis的注解一致，这里是为了将SelectKey注解扩展到字段上）添加到**字段**上，和mybatis的@SelectKey注解功能一致，可以自定义主键策略。
 
-**分表功能：**
+### 分表功能SimpleShardingMapper
 
 1. 需要继承SimpleShardingMapper<T, ID>, SimpleShardingMapper中定义的方法可以直接使用，因为mybatis的sql是根据类名+方法名确定唯一，所有SimpleShardingMapper和CrudMapper不能同时使用。
 2. 在实体中分表字段增加注解	@ShardingKey(prefix="_", methodPrecis="getTable", methodRange = "getTables")  methodPrecis为了根据字段值精确查找表的后缀。methodRange是为了支持分表字段的between and 操作。其余字段选填。
 3. 在实体中增加静态方法（methodPrecis和methodRange指定的方法名），上所示的方法：<br>
-```
+```java
 
 	public static String getTable(Object mobile) {
 		int index = Integer.parseInt(mobile.toString()) % 5;
@@ -119,12 +142,15 @@ mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
 
 示例使用mobile的取余5寻找分表字段。
 
-**分页功能：**
+详细使用方法可以在[JpaMapper-SimpleShardingMapper](https://www.pomit.cn/jpa-mapper/#/?id=_32-%E5%88%86%E8%A1%A8)里查看
+
+
+### 分页功能PagingAndSortingMapper
 
 1. 需要继承PagingAndSortingMapper<T, ID>，其中定义的方法可以直接使用，因为继承自CrudMapper，因此CrudMapper的方法也可以使用，同时也支持CrudMapper的findBy等功能。
 
 2. findAllPageable示例：
-```
+```java
 Pageable pageable = new Pageable();
 pageable.setPage(1);
 pageable.setSize(5);
@@ -139,6 +165,9 @@ Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
 Page<UserInfo> pageByPasswd(String passwd, Pageable pageable);
 ```
 这样就可以以passwd分页查询了。
+
+详细使用方法可以在[JpaMapper-PagingAndSortingMapper](https://www.pomit.cn/jpa-mapper/#/?id=_33-%E5%88%86%E9%A1%B5%E6%8E%92%E5%BA%8F)里查看
+
 
 ## 设计原理
 
