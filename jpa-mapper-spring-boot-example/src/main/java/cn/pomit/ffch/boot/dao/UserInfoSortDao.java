@@ -21,6 +21,7 @@ import cn.pomit.ffch.boot.domain.Page;
 import cn.pomit.ffch.boot.domain.UserInfo;
 import cn.pomit.ffch.boot.domain.UserRole;
 import cn.pomit.jpamapper.core.domain.page.Pageable;
+import cn.pomit.jpamapper.core.domain.page.Sort;
 import cn.pomit.jpamapper.core.mapper.PagingAndSortingMapper;
 
 
@@ -71,4 +72,6 @@ public interface UserInfoSortDao extends PagingAndSortingMapper<UserInfo, String
 	Page<UserInfo> selectCondition(@Param("passwd")String passwd, @Param("pageable") Pageable pageable);
 	
 	cn.pomit.jpamapper.core.domain.page.Page<UserInfo> pageByPasswd(String passwd, Pageable pageable);
+	
+	List<UserInfo> sortByPasswd(String passwd, Sort sort);
 }

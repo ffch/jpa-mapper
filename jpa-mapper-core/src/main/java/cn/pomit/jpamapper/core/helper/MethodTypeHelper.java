@@ -29,6 +29,7 @@ import cn.pomit.jpamapper.core.sql.type.select.FindOneSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.FindRangeSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.FindSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.PageBySqlType;
+import cn.pomit.jpamapper.core.sql.type.select.SortBySqlType;
 import cn.pomit.jpamapper.core.sql.type.select.conceal.PagedFindAllPageableSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.conceal.PagedPageBySqlType;
 import cn.pomit.jpamapper.core.sql.type.update.UpdateAllSqlType;
@@ -37,6 +38,7 @@ import cn.pomit.jpamapper.core.sql.type.update.UpdateSqlType;
 public class MethodTypeHelper {
 	public static final String SELECT = "findBy";
 	public static final String PAGE = "pageBy";
+	public static final String SORT = "sortBy";
 
 	public static final String UPDATE = "updateBy";
 	public static final String DELETE = "deleteBy";
@@ -105,6 +107,8 @@ public class MethodTypeHelper {
 			jpaMapperSqlType = DeleteBySqlType.INSTANCE;
 		} else if (name.startsWith(PAGE)) {
 			jpaMapperSqlType = PageBySqlType.INSTANCE;
+		} else if (name.startsWith(SORT)) {
+			jpaMapperSqlType = SortBySqlType.INSTANCE;
 		} else if (name.startsWith(PageConstant.PAGE_METHOD_PREFIX + PAGE)) {
 			jpaMapperSqlType = PagedPageBySqlType.INSTANCE;
 		} else {

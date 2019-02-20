@@ -42,6 +42,14 @@ public class SortRest {
 		return userInfoSortDao.findAllSorted(sort );
 	}
 	
+	@RequestMapping("/sortBy")
+	public List<UserInfo> sortBy(){
+		Order order = new Order(Direction.ASC, "mobile");
+		Order order1 = new Order(Direction.ASC, "userName");
+		Sort sort = new Sort(order, order1);
+		return userInfoSortDao.sortByPasswd("123", sort);
+	}
+	
 //	@RequestMapping("/findPageTest")
 //	public Page findPageTest(){
 //		

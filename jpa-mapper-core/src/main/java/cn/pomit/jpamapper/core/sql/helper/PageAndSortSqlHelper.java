@@ -1,6 +1,8 @@
 package cn.pomit.jpamapper.core.sql.helper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.pomit.jpamapper.core.domain.page.PageConstant;
 import cn.pomit.jpamapper.core.entity.JpaModelEntity;
@@ -82,6 +84,37 @@ public class PageAndSortSqlHelper extends DefaultSqlHelper {
 			}
 			sql.append("</trim>");
 		}
+		return sql.toString();
+	}
+	
+	public static String conditionSortBySql(JpaModelEntity jpaModelEntity, String params[]) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
+		
+		Map<String, String> ignoreCaseMap = new HashMap<>();
+		ignoreCaseMap.put(jpaModelEntity.getIdName().toLowerCase(), jpaModelEntity.getIdColumn());
+		for (Map.Entry<String, String> entry : jpaModelEntity.getFieldMap().entrySet()) {
+			ignoreCaseMap.put(entry.getKey().toLowerCase(), entry.getValue());
+		}
+
+		int index = 1;
+		for (String param : params) {
+			String fieldDeclaredName = ignoreCaseMap.get(param.toLowerCase());
+			if (fieldDeclaredName != null) {
+				sql.append("AND ");
+				sql.append(fieldDeclaredName);
+				sql.append(" = #{param");
+				sql.append(index);
+				sql.append("} ");
+			}
+			index++;
+		}
+		sql.append("</trim>");
+		
+		sql.append(
+				"<foreach collection =\"param" + index + ".orders\" item=\"item\" index=\"index\" separator=\",\" open=\" order by \" close=\"\"> ");
+		sql.append(" ${item.property} ${item.direction}");
+		sql.append(" </foreach> ");
 		return sql.toString();
 	}
 	
