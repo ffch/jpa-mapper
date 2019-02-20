@@ -161,10 +161,17 @@ pageable.setSort(sort);
 Page<UserInfo> page =  userInfoSortDao.findAllPageable(pageable);
 ```
 3. pageBy分页查询，因为CrudMapper已经定义了findBy,所以这里换个名字。用法如：
-```
+```java
 Page<UserInfo> pageByPasswd(String passwd, Pageable pageable);
 ```
 这样就可以以passwd分页查询了。
+
+4. sortBy排序查询。
+```java
+List<UserInfo> sortByPasswd(String passwd, Sort sort);
+```
+这样就可以以passwd为条件查询，以sort作为排序条件。
+
 
 详细使用方法可以在[JpaMapper-PagingAndSortingMapper](https://www.pomit.cn/jpa-mapper/#/?id=_33-%E5%88%86%E9%A1%B5%E6%8E%92%E5%BA%8F)里查看
 
