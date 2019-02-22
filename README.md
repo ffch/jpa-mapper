@@ -1,6 +1,6 @@
 [![License](http://img.shields.io/:license-apache-blue.svg "2.0")](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![JDK 1.8](https://img.shields.io/badge/JDK-1.8-green.svg "JDK 1.8")]()
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.ffch/jpa-mapper-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22cn.pomit%22%20AND%20a:%22jpa-mapper-core%22)
+[![Maven Central](https://img.shields.io/maven-central/v/cn.pomit/jpa-mapper-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22cn.pomit%22%20AND%20a:%22jpa-mapper-core%22)
 
 
 ## JpaMapper项目简介
