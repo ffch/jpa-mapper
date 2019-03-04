@@ -58,11 +58,15 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 详细使用说明可以在[项目主页](https://www.pomit.cn/jpa-mapper/#/)里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
 
 ### Maven依赖
+
+使用mybatis 3.4.6进行分页存在类型转换错误，因此JpaMapper需要mybatis 3.4.6以上。
+
  **springboot启动：** 
 ```xml
 <dependency>
-	<groupId>org.mybatis.spring.boot</groupId>
-	<artifactId>mybatis-spring-boot-starter</artifactId>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>3.4.6</version>
 </dependency>
 <dependency>
     <groupId>cn.pomit</groupId>
@@ -74,8 +78,9 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
  **非AutoConfiguration:** 
 ```xml
 <dependency>
-	<groupId>org.mybatis.spring.boot</groupId>
-	<artifactId>mybatis-spring-boot-starter</artifactId>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>3.4.6</version>
 </dependency>
 <dependency>
     <groupId>cn.pomit</groupId>
