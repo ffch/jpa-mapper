@@ -14,7 +14,7 @@ import java.util.List;
  * 
  */
 @Table(name="user_info")
-public class UserInfo implements Serializable {
+public class UserInfoUnion implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,7 +37,7 @@ public class UserInfo implements Serializable {
 	@JoinColumn(name="userName",referencedColumnName="userName")
 	private UserRole userRole;
 
-	public UserInfo() {
+	public UserInfoUnion() {
 	}
 
 	public String getUserName() {
@@ -87,6 +87,14 @@ public class UserInfo implements Serializable {
 
 	public void setValid(String valid) {
 		this.valid = valid;
+	}
+
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 
 	@Override

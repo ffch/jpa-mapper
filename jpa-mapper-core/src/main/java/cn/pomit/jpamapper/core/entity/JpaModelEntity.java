@@ -21,6 +21,9 @@ public class JpaModelEntity {
 	//分页参数
 	List<MethodParameters> methodParametersList = null;
 	
+	//联表实体
+	JoinEntity joinEntity = null;
+	
 	public String getTableName() {
 		return tableName;
 	}
@@ -124,5 +127,13 @@ public class JpaModelEntity {
 
 	public void setMethodParametersList(List<MethodParameters> methodParametersList) {
 		this.methodParametersList = methodParametersList;
+	}
+
+	public JoinEntity getJoinEntity() {
+		return joinEntity;
+	}
+
+	public void setJoinEntity(JoinEntity joinEntity) {
+		this.joinEntity = joinEntity;
 	}
 }

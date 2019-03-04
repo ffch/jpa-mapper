@@ -13,6 +13,8 @@ import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.Discriminator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultFlag;
@@ -42,6 +44,7 @@ import cn.pomit.jpamapper.core.sql.type.SqlType;
 import cn.pomit.jpamapper.core.util.StringUtil;
 
 public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
+	private static final Log LOGGER = LogFactory.getLog(JpaMapperAnnotationBuilder.class);
 	JpaModelEntity jpaModelEntity;
 
 	public JpaMapperAnnotationBuilder(Configuration configuration, Class<?> type) {
@@ -84,7 +87,15 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				jpaMapperConcealedBuilder.setJpaModelEntity(jpaModelEntity);
 				jpaMapperConcealedBuilder.parseConcealStatement(methodName);
 			}else{
-				resultMapId = parseResultMap(method);
+				if(jpaModelEntity.getJoinEntity()!=null){
+					if(jpaModelEntity.isSharding()){
+						LOGGER.debug("分表不能使用join操作，联表默认无效！");
+					}
+					
+				}else{
+					resultMapId = parseResultMap(method);
+				}
+				
 			}
 		}
 		
