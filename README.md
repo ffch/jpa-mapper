@@ -59,14 +59,14 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 
 ### Maven依赖
 
-使用mybatis 3.4.6进行分页存在类型转换错误，因此JpaMapper需要mybatis 3.4.6以上。
+使用mybatis 3.4.4进行分页存在类型转换错误，因此JpaMapper需要引入spring-mybatis版本1.3.2以上。
 
  **springboot启动：** 
 ```xml
 <dependency>
     <groupId>org.mybatis.spring.boot</groupId>
     <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>3.4.6</version>
+    <version>1.3.2</version>
 </dependency>
 <dependency>
     <groupId>cn.pomit</groupId>
