@@ -6,11 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import cn.pomit.jpamapper.core.entity.JoinType;
+import org.apache.ibatis.mapping.FetchType;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface One {
-	JoinType type() default JoinType.LEFT;
+public @interface One {	
+	FetchType fetchType() default FetchType.DEFAULT;
 }

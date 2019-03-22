@@ -22,6 +22,10 @@ public class UserRole implements Serializable {
 	
 	@Column(name ="userName")
 	private String userName;
+	
+	@Column(name ="phone")
+	private String phone;
+
 
 	public String getUserName() {
 		return userName;
@@ -53,6 +57,14 @@ public class UserRole implements Serializable {
 	@Override
 	public String toString() {
 		return "UserRole [id=" + id + ", role=" + role + ", userName=" + userName + "]";
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	

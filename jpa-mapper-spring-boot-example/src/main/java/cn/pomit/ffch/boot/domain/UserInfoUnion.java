@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import cn.pomit.jpamapper.core.annotation.One;
-import cn.pomit.jpamapper.core.entity.JoinType;
+import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class UserInfoUnion implements Serializable {
 	@Column(length=2)
 	private String valid;
 	
-	@One(type=JoinType.LEFT)
+	@One(fetchType=FetchType.EAGER)
 	@JoinColumn(name="userName",referencedColumnName="userName")
 	private UserRole userRole;
 

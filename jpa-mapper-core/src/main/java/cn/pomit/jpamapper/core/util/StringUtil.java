@@ -1,5 +1,7 @@
 package cn.pomit.jpamapper.core.util;
 
+import java.util.Random;
+
 /**
  * 字符串工具
  *
@@ -77,4 +79,16 @@ public class StringUtil {
         return new String(charr);
     }
 
+    /**
+	 * 生成指定size长度的随机数字
+	 */
+	public static String randomSizedNum(int size) {
+		Random random = new Random();
+		String result = "";
+		for (int i = 0; i < size; i++) {
+			result += random.nextInt(10);
+		}
+
+		return result;
+	}
 }

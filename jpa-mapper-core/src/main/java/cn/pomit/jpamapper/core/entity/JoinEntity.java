@@ -2,6 +2,8 @@ package cn.pomit.jpamapper.core.entity;
 
 import java.util.Map;
 
+import org.apache.ibatis.mapping.FetchType;
+
 /**
  * 联表实体
  * @author fufei
@@ -12,17 +14,12 @@ public class JoinEntity {
 	public static int MANY = 1;
 	
 	private int mappingType = -1;	
-	private JoinType joinType = JoinType.LEFT;
 	private Map<String,String> joinColumns;
 	private Class<?> entityType;
 	private String entityName;
 	
-	public JoinType getJoinType() {
-		return joinType;
-	}
-	public void setJoinType(JoinType joinType) {
-		this.joinType = joinType;
-	}
+	private FetchType fetchType;
+	
 	public Map<String, String> getJoinColumns() {
 		return joinColumns;
 	}
@@ -47,4 +44,11 @@ public class JoinEntity {
 	public void setEntityName(String entityName) {
 		this.entityName = entityName;
 	}
+	public FetchType getFetchType() {
+		return fetchType;
+	}
+	public void setFetchType(FetchType fetchType) {
+		this.fetchType = fetchType;
+	}
+	
 }

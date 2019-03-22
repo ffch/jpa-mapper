@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.Table;
 
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.Configuration;
 
 import cn.pomit.jpamapper.core.annotation.Many;
@@ -30,6 +32,7 @@ import cn.pomit.jpamapper.core.util.ReflectUtil;
 import cn.pomit.jpamapper.core.util.StringUtil;
 
 public class MapperRegister {
+	private static final Log LOGGER = LogFactory.getLog(MapperRegister.class);
 	private Class<?> mapper;
 	private List<Method> registerMethod = new ArrayList<>();
 	private Configuration configuration;
@@ -103,6 +106,7 @@ public class MapperRegister {
 		Table tableAnnotation = entity.getAnnotation(Table.class);
 		String tableName = entity.getSimpleName();
 		jpaModelEntity.setTargertEntity(entity);
+		jpaModelEntity.setId(entity.getSimpleName());
 		if (tableAnnotation != null) {
 			tableName = tableAnnotation.name();
 		}
@@ -118,7 +122,7 @@ public class MapperRegister {
 
 			// 联表注解
 			if (field.getAnnotation(JoinColumns.class) != null || field.getAnnotation(JoinColumn.class) != null) {
-				if (jpaModelEntity.getJoinEntity() != null)
+				if (jpaModelEntity.isJoin())
 					throw new JpaMapperException("JoinColumn(s)只能用一次哦！");
 				JoinEntity joinEntity = new JoinEntity();
 
@@ -126,10 +130,10 @@ public class MapperRegister {
 				Many many = field.getAnnotation(Many.class);
 				if (one != null) {
 					joinEntity.setMappingType(JoinEntity.ONE);
-					joinEntity.setJoinType(one.type());
+					joinEntity.setFetchType(one.fetchType());
 				} else if (many != null) {
 					joinEntity.setMappingType(JoinEntity.MANY);
-					joinEntity.setJoinType(many.type());
+					joinEntity.setFetchType(many.fetchType());
 				} else {
 					throw new JpaMapperException("JoinColumn(s)需要搭配cn.pomit.jpamapper.core.annotation.One(Many)一起使用哦！");
 				}
@@ -146,13 +150,13 @@ public class MapperRegister {
 					joinColumns.put(joinColumnAnno.name(), joinColumnAnno.referencedColumnName());
 				}
 				if (joinColumns.size() > 0) {
+					LOGGER.debug("提示：检测到" + joinColumns.size() + "个联表字段，JoinColumn注解只有name和referencedColumnName有效。");
 					joinEntity.setJoinColumns(joinColumns);
-				} else {
-					throw new JpaMapperException("JoinColumn(s)字段不能为空！");
-				}
-				joinEntity.setEntityName(field.getName());
-				joinEntity.setEntityType(field.getType());
-				jpaModelEntity.setJoinEntity(joinEntity);
+					joinEntity.setEntityName(field.getName());
+					joinEntity.setEntityType(field.getType());
+					jpaModelEntity.setJoinEntity(joinEntity);
+					jpaModelEntity.setJoin(true);
+				} 
 			}
 
 			Column columnAnnotation = field.getAnnotation(Column.class);
@@ -186,7 +190,11 @@ public class MapperRegister {
 				jpaModelEntity.setIdField(field);
 			} else {
 				jpaModelEntity.addField(fieldName, fieldDeclaredName);
+				jpaModelEntity.addFieldType(fieldName, field.getType().getSimpleName());
 			}
+		}
+		if(!jpaModelEntity.isHasId()){
+			throw new JpaMapperException("JpaMapper要求必须有ID字段！");
 		}
 		return jpaModelEntity;
 	}

@@ -30,6 +30,7 @@ import cn.pomit.jpamapper.core.sql.type.select.FindRangeSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.FindSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.PageBySqlType;
 import cn.pomit.jpamapper.core.sql.type.select.SortBySqlType;
+import cn.pomit.jpamapper.core.sql.type.select.conceal.JoinSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.conceal.PagedFindAllPageableSqlType;
 import cn.pomit.jpamapper.core.sql.type.select.conceal.PagedPageBySqlType;
 import cn.pomit.jpamapper.core.sql.type.update.UpdateAllSqlType;
@@ -59,6 +60,8 @@ public class MethodTypeHelper {
 		mapperTypeMap.put("findAll", FindAllSqlType.INSTANCE);
 		mapperTypeMap.put("findBatch", FindBatchSqlType.INSTANCE);
 		mapperTypeMap.put("count", CountSqlType.INSTANCE);
+		
+		mapperTypeMap.put("joinOfJpaMapperInternal", JoinSqlType.INSTANCE);
 
 		mapperTypeMap.put("findAllSorted", FindAllSortedSqlType.INSTANCE);
 		mapperTypeMap.put("findAllPageable", FindAllPageableSqlType.INSTANCE);

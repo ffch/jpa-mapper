@@ -66,7 +66,7 @@ public interface UserRoleDao extends CrudMapper<UserRole, Integer> {
 	        "where a.userName = #{userName}",
 	   "</script>"})
 	@Results({
-		@Result(column="userName",property="userRole",
+		@Result(column="{userName=userName,phone=mobile}",property="userRole",
 		one=@One(select="cn.pomit.ffch.boot.dao.UserRoleDao.getRole",
 		fetchType=FetchType.EAGER))
 	})
@@ -76,9 +76,10 @@ public interface UserRoleDao extends CrudMapper<UserRole, Integer> {
 		"<script>",
 	        "SELECT ",
 	        "a.userName as userName,",
-	        "a.role as role",
+	        "a.role as role,",
+	        "a.phone as phone",
 	        "FROM user_role a ",
-	        "where a.userName = #{userName}",
+	        "where a.userName = #{userName} and a.phone = #{phone}",
 	   "</script>"})
-	UserRole getRole(@Param("userName") String userName);
+	UserRole getRole(String phone,String userName);
 }

@@ -22,7 +22,7 @@ public class MybatisRest {
 	UserRoleDao userRoleDao;
 	
 	@RequestMapping("/selectAll")
-	public List<UserRole> findOne(@PathVariable String mobile){
+	public List<UserRole> findOne(){
 		return userRoleDao.selectAll();
 	}
 	
@@ -32,7 +32,7 @@ public class MybatisRest {
 		return userRoleDao.selectPage(rowBounds);
 	}
 	
-	@RequestMapping("/selectJion")
+	@RequestMapping("/selectJoin")
 	public UserInfoUnion selectJion(){
 		return userRoleDao.selectJion("cff");
 	}

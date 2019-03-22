@@ -108,6 +108,21 @@ public class DefaultSqlHelper extends SqlHelper{
 		return sql.toString();
 	}
 	
+	public static String conditionConcealBySql(JpaModelEntity jpaModelEntity, Map<String,String> params) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("<trim prefix=\" where \" prefixOverrides=\"AND\">");
+		Map<String, String> fieldMap = jpaModelEntity.getFieldMap();
+		for (String param : params.values()) {
+			sql.append("AND ");
+			sql.append(fieldMap.get(param));
+			sql.append(" = #{");
+			sql.append(param);
+			sql.append("} ");
+		}
+		sql.append("</trim>");
+		return sql.toString();
+	}
+	
 	/**
 	 * 获取实体的select语句，只获取Column注解的字段
 	 * @param jpaModelEntity jpaModelEntity

@@ -2,10 +2,6 @@ package cn.pomit.ffch.boot.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
-
-import cn.pomit.jpamapper.core.annotation.One;
-import cn.pomit.jpamapper.core.entity.JoinType;
-
 import java.util.List;
 
 
@@ -32,10 +28,6 @@ public class UserInfo implements Serializable {
 
 	@Column(length=2)
 	private String valid;
-	
-	@One(type=JoinType.LEFT)
-	@JoinColumn(name="userName",referencedColumnName="userName")
-	private UserRole userRole;
 
 	public UserInfo() {
 	}

@@ -6,11 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.ibatis.mapping.FetchType;
-
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
-public @interface Many {	
-	FetchType fetchType() default FetchType.DEFAULT;
+@Target({ ElementType.METHOD })
+public @interface JoinExclude {
+	
 }
