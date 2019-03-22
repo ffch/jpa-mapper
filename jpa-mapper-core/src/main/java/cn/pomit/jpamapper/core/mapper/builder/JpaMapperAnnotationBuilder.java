@@ -116,6 +116,7 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 									JpaMapperJoinBuilder jpaMapperJoinBuilder = new JpaMapperJoinBuilder(configuration,type);
 									jpaMapperJoinBuilder.setJpaModelEntity(jpaModelEntity);
 									jpaMapperJoinBuilder.parseJoinStatement(methodName);
+									JoinConstant.joinMap.put(jpaModelEntity.getId(), methodName);
 								}
 								resultMapId = parseJoinResultMap(method, methodName, joinEntity);
 							}
