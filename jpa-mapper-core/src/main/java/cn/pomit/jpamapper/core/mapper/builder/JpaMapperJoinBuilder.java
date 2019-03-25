@@ -31,6 +31,11 @@ import cn.pomit.jpamapper.core.sql.type.IgnoreSqlType;
 import cn.pomit.jpamapper.core.sql.type.SqlType;
 import cn.pomit.jpamapper.core.util.StringUtil;
 
+/**
+ * 联表查询隐形查询statement构造器
+ * @author fufei
+ *
+ */
 public class JpaMapperJoinBuilder extends MapperAnnotationBuilder {
 	JpaModelEntity jpaModelEntity;
 
@@ -47,6 +52,10 @@ public class JpaMapperJoinBuilder extends MapperAnnotationBuilder {
 		this.jpaModelEntity = jpaModelEntity;
 	}
 
+	/**
+	 * 构造Statement
+	 * @param methodName 自定义的方法名
+	 */
 	public void parseJoinStatement(String methodName) {
 		final String mappedStatementId = type.getName() + "." + methodName;
 		LanguageDriver languageDriver = assistant.getLanguageDriver(null);
@@ -87,6 +96,13 @@ public class JpaMapperJoinBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 
+	/**
+	 * 解析resultMap
+	 * @param methodName 方法名
+	 * @param concealedSqlType SqlType
+	 * @param joinEntity 联表实体
+	 * @return resultMapId
+	 */
 	private String parseResultMap(String methodName, AbstractConcealedSqlType concealedSqlType, JoinEntity joinEntity) {
 		Class<?> returnType = joinEntity.getEntityType();
 		ConstructorArgs args = null;
@@ -119,6 +135,11 @@ public class JpaMapperJoinBuilder extends MapperAnnotationBuilder {
 		return MethodTypeHelper.getSqlCommandType(method);
 	}
 
+	/**
+	 * 简单解析联表实体
+	 * @param entity
+	 * @return
+	 */
 	private JpaModelEntity parseSimpleModel(Class<?> entity) {
 		JpaModelEntity jpaModelEntity = new JpaModelEntity();
 

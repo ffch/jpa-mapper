@@ -92,6 +92,10 @@ public class MapperRegister {
 		return NO_MAPPER;
 	}
 
+	/**
+	 * 解析Mapper的泛型实体
+	 * @return JpaModelEntity实体信息
+	 */
 	private JpaModelEntity parseModel() {
 		JpaModelEntity jpaModelEntity = new JpaModelEntity();
 		if (type == SHARDING_MAPPER) {
@@ -128,12 +132,25 @@ public class MapperRegister {
 
 				One one = field.getAnnotation(One.class);
 				Many many = field.getAnnotation(Many.class);
+				
+				joinEntity.setEntityName(field.getName());
 				if (one != null) {
 					joinEntity.setMappingType(JoinEntity.ONE);
 					joinEntity.setFetchType(one.fetchType());
+					Class<?> typeField = field.getType();
+					if(ReflectUtil.isCollection(typeField)){
+						throw new JpaMapperException("@One注解不能用在集合类属性上");
+					}
+					joinEntity.setEntityType(typeField);
+					
 				} else if (many != null) {
 					joinEntity.setMappingType(JoinEntity.MANY);
 					joinEntity.setFetchType(many.fetchType());
+					Class<?> typeField = ReflectUtil.findFeildGenericClass(field);
+					if (entity == null) {
+						throw new JpaMapperException("未能获取到Many注解的泛型类型");
+					}
+					joinEntity.setEntityType(typeField);
 				} else {
 					throw new JpaMapperException("JoinColumn(s)需要搭配cn.pomit.jpamapper.core.annotation.One(Many)一起使用哦！");
 				}
@@ -150,10 +167,8 @@ public class MapperRegister {
 					joinColumns.put(joinColumnAnno.name(), joinColumnAnno.referencedColumnName());
 				}
 				if (joinColumns.size() > 0) {
-					LOGGER.debug("提示：检测到" + joinColumns.size() + "个联表字段，JoinColumn注解只有name和referencedColumnName有效。");
+					LOGGER.debug("提示：检测到" + joinColumns.size() + "个联表字段");
 					joinEntity.setJoinColumns(joinColumns);
-					joinEntity.setEntityName(field.getName());
-					joinEntity.setEntityType(field.getType());
 					jpaModelEntity.setJoinEntity(joinEntity);
 					jpaModelEntity.setJoin(true);
 				} 

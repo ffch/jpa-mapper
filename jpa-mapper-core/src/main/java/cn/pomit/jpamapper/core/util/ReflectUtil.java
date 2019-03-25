@@ -1,5 +1,6 @@
 package cn.pomit.jpamapper.core.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -96,5 +97,24 @@ public class ReflectUtil {
 		}
 		
 		return entityClass;
+	}
+	
+	/**
+	 * 获取属性的泛型类型
+	 * @param field 属性type
+	 * @return 泛型类型
+	 */
+	public static Class<?> findFeildGenericClass(Field field){
+		ParameterizedType listGenericType = (ParameterizedType) field.getGenericType();
+        Type[] listActualTypeArguments = listGenericType.getActualTypeArguments();
+        if(listActualTypeArguments == null || listActualTypeArguments.length < 1)return field.getType();
+        Class<?> priorityClass = (Class<?>) listActualTypeArguments[0];
+        for (int i = 1; i < listActualTypeArguments.length; i++) {
+        	Class<?> curClass = (Class<?>) listActualTypeArguments[i];
+            if(isGeneralClass(curClass)){
+            	priorityClass = curClass;
+            }
+        }
+		return priorityClass;
 	}
 }

@@ -1,12 +1,17 @@
 package cn.pomit.ffch.boot.domain;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.List;
 
-import cn.pomit.jpamapper.core.annotation.One;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.Table;
+
 import org.apache.ibatis.mapping.FetchType;
 
-import java.util.List;
+import cn.pomit.jpamapper.core.annotation.Many;
 
 
 /**
@@ -33,9 +38,12 @@ public class UserInfoUnion implements Serializable {
 	@Column(length=2)
 	private String valid;
 	
-	@One(fetchType=FetchType.EAGER)
-	@JoinColumn(name="userName",referencedColumnName="userName")
-	private UserRole userRole;
+	@Many(fetchType=FetchType.EAGER)
+	@JoinColumns({
+		@JoinColumn(name="userName",referencedColumnName="userName"),
+		@JoinColumn(name="mobile",referencedColumnName="phone")
+	})
+	private List<UserRole> userRole;
 
 	public UserInfoUnion() {
 	}
@@ -88,12 +96,14 @@ public class UserInfoUnion implements Serializable {
 	public void setValid(String valid) {
 		this.valid = valid;
 	}
+	
+	
 
-	public UserRole getUserRole() {
+	public List<UserRole> getUserRole() {
 		return userRole;
 	}
 
-	public void setUserRole(UserRole userRole) {
+	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
 

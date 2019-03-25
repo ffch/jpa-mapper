@@ -5,6 +5,11 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
+/**
+ * 联表查询结果配置
+ * @author fufei
+ *
+ */
 public class JoinResult {
 	boolean id = false;
 

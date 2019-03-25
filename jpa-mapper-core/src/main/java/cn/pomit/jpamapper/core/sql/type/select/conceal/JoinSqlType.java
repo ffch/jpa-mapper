@@ -7,6 +7,11 @@ import cn.pomit.jpamapper.core.entity.JpaModelEntity;
 import cn.pomit.jpamapper.core.sql.helper.DefaultSqlHelper;
 import cn.pomit.jpamapper.core.sql.type.AbstractConcealedSqlType;
 
+/**
+ * 联表的隐性SqlType
+ * @author fufei
+ *
+ */
 public class JoinSqlType extends AbstractConcealedSqlType {
 
 	public static final JoinSqlType INSTANCE = new JoinSqlType();
