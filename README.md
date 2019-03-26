@@ -47,10 +47,14 @@ v1.2.2
 
  1. 修复了inseret操作的字段对应bug
  
- v2.0
+v2.0
 
  1. groupId更改为cn.pomit，2.0版本以后不再用com.github.ffch。
  2. 新增sortBy功能，可以根据And分割字段名进行排序。
+ 
+v2.1
+
+ 1. 新增一对一、一对多多表查询功能。
 
 ## 使用说明
 jar包已经上传到maven中央仓库。
@@ -67,7 +71,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 <dependency>
     <groupId>cn.pomit</groupId>
     <artifactId>jpa-mapper-spring-boot-starter</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ```
 
@@ -80,7 +84,7 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 <dependency>
     <groupId>cn.pomit</groupId>
     <artifactId>jpa-mapper-core</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 ```
 使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
@@ -112,6 +116,19 @@ Mapper的泛型要指明实体类和主键
 
 1. @GeneratedValue(generator="JDBC"), 使用自增策略，对应mybatis的Jdbc3KeyGenerator
 2. @GeneratedValue除generator="JDBC"外，支持@SelectKey注解（非mybatis的注解，但和mybatis的注解一致，这里是为了将SelectKey注解扩展到字段上）添加到**字段**上，和mybatis的@SelectKey注解功能一致，可以自定义主键策略。
+
+### 联表查询
+
+1. 在需要联表查询的字段上，增加@Many或者@One注解，同时增加@JoinColumns或者@JoinColumn注解。@JoinColumn注解只有name和referencedColumnName字段有效，并且这两个字段对应两个实体中的字段名，而不是表字段名。
+
+```java
+	@Many(fetchType=FetchType.EAGER)
+	@JoinColumns({
+		@JoinColumn(name="userName",referencedColumnName="userName"),
+		@JoinColumn(name="mobile",referencedColumnName="phone")
+	})
+	private List<UserRole> userRole;
+```
 
 ### 分表功能SimpleShardingMapper
 
