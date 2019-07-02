@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>cn.pomit</groupId>
 		<artifactId>jpa-mapper</artifactId>
-		<version>2.0</version>
+		<version>2.1</version>
 	</parent>
 	<artifactId>jpa-mapper-core</artifactId>
 	<name>jpa-mapper-core</name>

@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public class JpaModelEntity {
+	String id = "JpaModelEntity";
 	String tableName;
 	Map<String, String> fieldMap = new HashMap<>();
+	Map<String, String> fieldType = new HashMap<>();
 	boolean hasId = false;
 	String idName;
 	String idColumn;
@@ -21,6 +23,19 @@ public class JpaModelEntity {
 	//分页参数
 	List<MethodParameters> methodParametersList = null;
 	
+	//联表
+	boolean isJoin = false;
+	JoinEntity joinEntity = null;
+	
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getTableName() {
 		return tableName;
 	}
@@ -35,6 +50,23 @@ public class JpaModelEntity {
 
 	public void setFieldMap(Map<String, String> fieldMap) {
 		this.fieldMap = fieldMap;
+	}
+	
+
+	public Map<String, String> getFieldType() {
+		return fieldType;
+	}
+
+	public void setFieldType(Map<String, String> fieldType) {
+		this.fieldType = fieldType;
+	}
+	/**
+	 * 添加变量和类型的对应关系
+	 * @param fieldName 成员变量
+	 * @param type 变量名
+	 */
+	public void addFieldType(String fieldName, String type) {
+		fieldType.put(fieldName, type);
 	}
 
 	/**
@@ -125,4 +157,21 @@ public class JpaModelEntity {
 	public void setMethodParametersList(List<MethodParameters> methodParametersList) {
 		this.methodParametersList = methodParametersList;
 	}
+
+	public JoinEntity getJoinEntity() {
+		return joinEntity;
+	}
+
+	public void setJoinEntity(JoinEntity joinEntity) {
+		this.joinEntity = joinEntity;
+	}
+
+	public boolean isJoin() {
+		return isJoin;
+	}
+
+	public void setJoin(boolean isJoin) {
+		this.isJoin = isJoin;
+	}
+	
 }

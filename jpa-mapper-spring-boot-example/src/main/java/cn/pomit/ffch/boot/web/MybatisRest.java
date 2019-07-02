@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.pomit.ffch.boot.dao.UserInfoHisDao;
 import cn.pomit.ffch.boot.dao.UserRoleDao;
 import cn.pomit.ffch.boot.domain.UserInfoHis;
+import cn.pomit.ffch.boot.domain.UserInfoUnion;
 import cn.pomit.ffch.boot.domain.UserRole;
 
 @RestController
@@ -21,7 +22,7 @@ public class MybatisRest {
 	UserRoleDao userRoleDao;
 	
 	@RequestMapping("/selectAll")
-	public List<UserRole> findOne(@PathVariable String mobile){
+	public List<UserRole> findOne(){
 		return userRoleDao.selectAll();
 	}
 	
@@ -31,5 +32,8 @@ public class MybatisRest {
 		return userRoleDao.selectPage(rowBounds);
 	}
 	
-	
+	@RequestMapping("/selectJoin")
+	public UserInfoUnion selectJion(){
+		return userRoleDao.selectJion("cff");
+	}
 }

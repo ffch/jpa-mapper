@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.GeneratedValue;
 
@@ -13,7 +14,10 @@ import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.Discriminator;
+import org.apache.ibatis.mapping.FetchType;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -27,9 +31,13 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
+import cn.pomit.jpamapper.core.annotation.JoinExclude;
 import cn.pomit.jpamapper.core.annotation.SelectKey;
+import cn.pomit.jpamapper.core.domain.conceal.JoinResult;
 import cn.pomit.jpamapper.core.domain.conceal.PagedResult;
+import cn.pomit.jpamapper.core.domain.join.JoinConstant;
 import cn.pomit.jpamapper.core.domain.page.PageConstant;
+import cn.pomit.jpamapper.core.entity.JoinEntity;
 import cn.pomit.jpamapper.core.entity.JpaModelEntity;
 import cn.pomit.jpamapper.core.entity.MethodParameters;
 import cn.pomit.jpamapper.core.helper.MethodTypeHelper;
@@ -42,6 +50,7 @@ import cn.pomit.jpamapper.core.sql.type.SqlType;
 import cn.pomit.jpamapper.core.util.StringUtil;
 
 public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
+	private static final Log LOGGER = LogFactory.getLog(JpaMapperAnnotationBuilder.class);
 	JpaModelEntity jpaModelEntity;
 
 	public JpaMapperAnnotationBuilder(Configuration configuration, Class<?> type) {
@@ -62,9 +71,9 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		final String mappedStatementId = type.getName() + "." + method.getName();
 		LanguageDriver languageDriver = assistant.getLanguageDriver(null);
 		SqlType jpaMapperSqlType = getJpaMapperSqlType(method);
-		if(jpaMapperSqlType instanceof IgnoreSqlType){
+		if (jpaMapperSqlType instanceof IgnoreSqlType) {
 			return;
-			//throw new JpaMapperException("未知的方法类型！" + method.getName());
+			// throw new JpaMapperException("未知的方法类型！" + method.getName());
 		}
 		SqlCommandType sqlCommandType = jpaMapperSqlType.getSqlCommandType();
 		Class<?> parameterTypeClass = getParameterType(method);
@@ -74,23 +83,55 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 		boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 		String resultMapId = null;
 		if (isSelect) {
-			if(jpaMapperSqlType.pageSupport()){
+			if (jpaMapperSqlType.pageSupport()) {
 				String methodName = PageConstant.PAGE_METHOD_PREFIX + method.getName();
-				AbstractPageSortSqlType abstractPageSortSqlType = (AbstractPageSortSqlType)jpaMapperSqlType;
-				List<MethodParameters> methodParametersList = abstractPageSortSqlType.getMethodParameters(jpaModelEntity, method.getName());
+				AbstractPageSortSqlType abstractPageSortSqlType = (AbstractPageSortSqlType) jpaMapperSqlType;
+				List<MethodParameters> methodParametersList = abstractPageSortSqlType
+						.getMethodParameters(jpaModelEntity, method.getName());
 				jpaModelEntity.setMethodParametersList(methodParametersList);
 				resultMapId = parsePagedResultMap(method, methodName, methodParametersList);
-				JpaMapperConcealedBuilder jpaMapperConcealedBuilder = new JpaMapperConcealedBuilder(configuration, type);
+				JpaMapperConcealedBuilder jpaMapperConcealedBuilder = new JpaMapperConcealedBuilder(configuration,
+						type);
 				jpaMapperConcealedBuilder.setJpaModelEntity(jpaModelEntity);
 				jpaMapperConcealedBuilder.parseConcealStatement(methodName);
-			}else{
-				resultMapId = parseResultMap(method);
+			} else {
+				if (jpaModelEntity.isJoin()) {
+					if (jpaModelEntity.isSharding()) {
+						LOGGER.debug("分表不能使用join操作，联表默认无效！");
+						resultMapId = parseResultMap(method);
+					} else {
+						JoinExclude joinExclude = method.getAnnotation(JoinExclude.class);
+						if (joinExclude != null) {
+							LOGGER.debug("方法" + method.getName() + "的join操作已设置为无效。");
+							resultMapId = parseResultMap(method);
+						} else {
+							JoinEntity joinEntity = jpaModelEntity.getJoinEntity();
+							if (joinEntity == null) {
+								resultMapId = parseResultMap(method);
+							} else {
+								String methodName = JoinConstant.joinMap.get(jpaModelEntity.getId());
+								if (StringUtil.isEmpty(methodName)) {
+									methodName = JoinConstant.JOIN_METHOD;		
+									
+									JpaMapperJoinBuilder jpaMapperJoinBuilder = new JpaMapperJoinBuilder(configuration,type);
+									jpaMapperJoinBuilder.setJpaModelEntity(jpaModelEntity);
+									jpaMapperJoinBuilder.parseJoinStatement(methodName);
+									JoinConstant.joinMap.put(jpaModelEntity.getId(), methodName);
+								}
+								resultMapId = parseJoinResultMap(method, methodName, joinEntity);
+							}
+						}
+					}
+				} else {
+					resultMapId = parseResultMap(method);
+				}
+
 			}
 		}
-		
+
 		SqlSource sqlSource = JpaMapperSqlFactory.createSqlSource(jpaModelEntity, method, jpaMapperSqlType,
 				parameterTypeClass, languageDriver, configuration);
-		
+
 		boolean flushCache = !isSelect;
 		boolean useCache = isSelect;
 
@@ -117,61 +158,127 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 				null);
 	}
 
+	private String parseJoinResultMap(Method method, String methodName, JoinEntity joinEntity) {
+		Class<?> returnType = getReturnType(method);
+		ConstructorArgs args = method.getAnnotation(ConstructorArgs.class);
+
+		JoinResult joinResult = new JoinResult();
+
+		StringBuilder reg = new StringBuilder();
+		reg.append("{");
+		Map<String, String> joinColumns = joinEntity.getJoinColumns();
+		for (String key : joinColumns.keySet()) {
+			reg.append(joinColumns.get(key));
+			reg.append(" = ");
+			reg.append(key);
+			reg.append(",");
+		}
+		reg.deleteCharAt(reg.length() - 1);
+		reg.append("}");
+
+		joinResult.setColumn(reg.toString());
+		joinResult.setProperty(joinEntity.getEntityName());
+		joinResult.setSelect(methodName);
+		joinResult.setFetchType(joinEntity.getFetchType());
+
+		TypeDiscriminator typeDiscriminator = method.getAnnotation(TypeDiscriminator.class);
+		String resultMapId = generateResultMapName(method);
+
+		List<ResultMapping> resultMappings = new ArrayList<ResultMapping>();
+		applyConstructorArgs(argsIf(args), returnType, resultMappings);
+		applyJoinResult(joinResult, returnType, resultMappings);
+		Discriminator disc = applyDiscriminator(resultMapId, returnType, typeDiscriminator);
+		assistant.addResultMap(resultMapId, returnType, null, disc, resultMappings, null);
+		createDiscriminatorResultMaps(resultMapId, returnType, typeDiscriminator);
+
+		return resultMapId;
+	}
+
+	private void applyJoinResult(JoinResult result, Class<?> resultType, List<ResultMapping> resultMappings) {
+		List<ResultFlag> flags = new ArrayList<ResultFlag>();
+		if (result.isId()) {
+			flags.add(ResultFlag.ID);
+		}
+		@SuppressWarnings("unchecked")
+		Class<? extends TypeHandler<?>> typeHandler = (Class<? extends TypeHandler<?>>) ((result
+				.getTypeHandler() == UnknownTypeHandler.class) ? null : result.getTypeHandler());
+		ResultMapping resultMapping = assistant.buildResultMapping(resultType, nullOrEmpty(result.getProperty()),
+				nullOrEmpty(result.getColumn()), result.getJavaType() == void.class ? null : result.getJavaType(),
+				result.getJdbcType() == JdbcType.UNDEFINED ? null : result.getJdbcType(), nestedJoinSelectId(result),
+				null, null, null, typeHandler, flags, null, null, isJoinLazy(result));
+		resultMappings.add(resultMapping);
+	}
+
+	private String nestedJoinSelectId(JoinResult result) {
+		String nestedSelect = result.getSelect();
+		if (nestedSelect == null || "".equals(nestedSelect))
+			return null;
+		if (!nestedSelect.contains(".")) {
+			nestedSelect = type.getName() + "." + nestedSelect;
+		}
+		return nestedSelect;
+	}
+
+	public boolean isJoinLazy(JoinResult result) {
+		boolean isLazy = configuration.isLazyLoadingEnabled();
+		isLazy = (result.getFetchType() == FetchType.LAZY);
+		return isLazy;
+	}
+
 	private String parsePagedResultMap(Method method, String methodName, List<MethodParameters> methodParametersList) {
 		Class<?> returnType = getReturnType(method);
 		ConstructorArgs args = method.getAnnotation(ConstructorArgs.class);
 		List<PagedResult> results = new ArrayList<>();
-		
+
 		PagedResult countPagedResult = new PagedResult();
 		countPagedResult.setColumn(PageConstant.COUNT);
 		countPagedResult.setProperty(PageConstant.COUNT);
 		countPagedResult.setJavaType(Integer.class);
 		countPagedResult.setJdbcType(JdbcType.INTEGER);
 		results.add(countPagedResult);
-		
+
 		StringBuilder reg = new StringBuilder();
 		reg.append("{");
-		if(methodParametersList != null){
+		if (methodParametersList != null) {
 			int index = 0;
-			for(MethodParameters item : methodParametersList){
-				if(index < 2){
+			for (MethodParameters item : methodParametersList) {
+				if (index < 2) {
 					PagedResult pagedResult = new PagedResult();
 					pagedResult.setColumn(item.getProperty());
 					pagedResult.setProperty(item.getProperty());
 					pagedResult.setJavaType(item.getType());
 					results.add(pagedResult);
 				}
-				
+
 				reg.append(item.getProperty());
 				reg.append(" = ");
 				reg.append(item.getProperty());
 				reg.append(",");
 				index++;
 			}
-			reg.deleteCharAt(reg.length()-1);
+			reg.deleteCharAt(reg.length() - 1);
 		}
 		reg.append("}");
-		
+
 		PagedResult contentPagedResult = new PagedResult();
 		contentPagedResult.setColumn(reg.toString());
 		contentPagedResult.setProperty(PageConstant.CONTENT);
 		contentPagedResult.setSelect(methodName);
 		results.add(contentPagedResult);
-		
-		
+
 		TypeDiscriminator typeDiscriminator = method.getAnnotation(TypeDiscriminator.class);
 		String resultMapId = generateResultMapName(method);
-		
+
 		List<ResultMapping> resultMappings = new ArrayList<ResultMapping>();
 		applyConstructorArgs(argsIf(args), returnType, resultMappings);
 		applyPagedResults(results, returnType, resultMappings);
 		Discriminator disc = applyDiscriminator(resultMapId, returnType, typeDiscriminator);
 		assistant.addResultMap(resultMapId, returnType, null, disc, resultMappings, null);
 		createDiscriminatorResultMaps(resultMapId, returnType, typeDiscriminator);
-		
+
 		return resultMapId;
 	}
-	
+
 	private void applyPagedResults(List<PagedResult> results, Class<?> resultType, List<ResultMapping> resultMappings) {
 		for (PagedResult result : results) {
 			List<ResultFlag> flags = new ArrayList<ResultFlag>();
@@ -184,15 +291,16 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 			ResultMapping resultMapping = assistant.buildResultMapping(resultType, nullOrEmpty(result.getProperty()),
 					nullOrEmpty(result.getColumn()), result.getJavaType() == void.class ? null : result.getJavaType(),
 					result.getJdbcType() == JdbcType.UNDEFINED ? null : result.getJdbcType(),
-							nestedPagedSelectId(result), null, null, null, typeHandler, flags, null,
-					null, configuration.isLazyLoadingEnabled());
+					nestedPagedSelectId(result), null, null, null, typeHandler, flags, null, null,
+					configuration.isLazyLoadingEnabled());
 			resultMappings.add(resultMapping);
 		}
 	}
 
 	private String nestedPagedSelectId(PagedResult result) {
 		String nestedSelect = result.getSelect();
-		if(nestedSelect == null || "".equals(nestedSelect))return null;
+		if (nestedSelect == null || "".equals(nestedSelect))
+			return null;
 		if (!nestedSelect.contains(".")) {
 			nestedSelect = type.getName() + "." + nestedSelect;
 		}
@@ -205,21 +313,26 @@ public class JpaMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
 	/**
 	 * 处理 GeneratedValue 注解
-	 * @param baseStatementId baseStatementId
-	 * @param parameterTypeClass parameterTypeClass
-	 * @param languageDriver languageDriver
+	 * 
+	 * @param baseStatementId
+	 *            baseStatementId
+	 * @param parameterTypeClass
+	 *            parameterTypeClass
+	 * @param languageDriver
+	 *            languageDriver
 	 * @return JpaMapperKeyGenerator
 	 */
 	protected JpaMapperKeyGenerator processGeneratedValue(String baseStatementId, Class<?> parameterTypeClass,
 			LanguageDriver languageDriver) {
 		JpaMapperKeyGenerator jpaMapperKeyGenerator = new JpaMapperKeyGenerator();
 		Field idField = jpaModelEntity.getIdField();
-		if(idField == null)return jpaMapperKeyGenerator;
+		if (idField == null)
+			return jpaMapperKeyGenerator;
 		GeneratedValue generatedValue = idField.getAnnotation(GeneratedValue.class);
-		
+
 		String fieldName = jpaModelEntity.getIdName();
 		String fieldDeclaredName = jpaModelEntity.getIdColumn();
-		
+
 		if (generatedValue != null) {
 			if ("JDBC".equals(generatedValue.generator())) {
 				jpaMapperKeyGenerator.setKeyGenerator(Jdbc3KeyGenerator.INSTANCE);

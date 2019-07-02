@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Mapper 配置
  *
- * @author liuzh
+ * @author cff
  */
 @Configuration
 @ConditionalOnBean(SqlSessionFactory.class)
