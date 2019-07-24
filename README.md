@@ -3,20 +3,21 @@
 [![Maven Central](https://img.shields.io/maven-central/v/cn.pomit/jpa-mapper-core.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22cn.pomit%22%20AND%20a:%22jpa-mapper-core%22)
 
 
-## JpaMapper项目简介
+## [JpaMapper](https://www.pomit.cn/jpa-mapper)项目简介
 
 - 如果你喜欢Jpa hibernate的简洁写法；
 - 或许你不喜欢写sql；
 - 或许你用了Mapper工具之后还是要写sql；
 
-那就用JpaMapper吧！JpaMapper是尽量按照JPA hibernate的书写风格，对mybatis进行封装，是CRUD操作更加简单易用，免于不断写sql。
+那就用[JpaMapper](https://www.pomit.cn/jpa-mapper)吧！JpaMapper是尽量按照JPA hibernate的书写风格，对mybatis进行封装，是CRUD操作更加简单易用，免于不断写sql。
 
-JpaMapper以动态生成sql替换手动生成sql的过程，并根据注解生成sqlsource的过程去生成sql，并将sql交给mybatis去管理，原理上和自己写sql是一致的，并不会去替换mybatis的底层实现。因为不用担心无法操控，任何可能出现的问题，只需要debug下查看生成的sql和预期的是否一致即可。
+[JpaMapper](https://www.pomit.cn/jpa-mapper)以动态生成sql替换手动生成sql的过程，并根据注解生成sqlsource的过程去生成sql，并将sql交给mybatis去管理，原理上和自己写sql是一致的，并不会去替换mybatis的底层实现。因为不用担心无法操控，任何可能出现的问题，只需要debug下查看生成的sql和预期的是否一致即可。
 
 ## [Gitee](https://gitee.com/ffch/JpaMapper)
 ## [Github](https://github.com/ffch/jpa-mapper)
 ## [Get Started](https://www.pomit.cn/jpa-mapper/#/)
 
+## 官方地址: [https://www.pomit.cn/jpa-mapper](https://www.pomit.cn/jpa-mapper)
 
 ## 主要功能
 v1.0.0:
@@ -61,9 +62,21 @@ jar包已经上传到maven中央仓库。
 https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 详细使用说明可以在[项目主页](https://www.pomit.cn/jpa-mapper/#/)里查看，也可以在[个人博客JpaMapper目录](https://blog.csdn.net/feiyangtianyao/article/category/8446635)下查看
 
+## Demo地址
+
+**SpringBoot:**
+- Gitee: [https://gitee.com/ffch/JpaMapperSpringBoot](https://gitee.com/ffch/JpaMapperSpringBoot)
+
+- Github: [https://github.com/ffch/JpaMapperSpringBoot](https://github.com/ffch/JpaMapperSpringBoot)
+
+**Spring:**
+- Gitee: [https://gitee.com/ffch/JpaMapperSpring](https://gitee.com/ffch/JpaMapperSpring)
+
+- Github: [https://github.com/ffch/JpaMapperSpring](https://github.com/ffch/JpaMapperSpring)
+
 ### Maven依赖
 
-**使用mybatis 3.4.4进行分页存在类型转换错误，因此JpaMapper需要引入spring-mybatis版本1.3.2以上。**
+**使用mybatis 3.4.4进行分页存在类型转换错误，因此JpaMapper需要引入spring-mybatis版本1.3.2以上,或者引入mybatis 3.4.6以上。**
 
  **springboot启动：** 
 ```xml
@@ -79,12 +92,17 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
 </dependency>
 ```
 
- **非AutoConfiguration:** 
+**Spring启动:** 
 ```xml
 <dependency>
-    <groupId>org.mybatis.spring.boot</groupId>
-    <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>1.3.2</version>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis</artifactId>
+	<version>3.4.6</version>
+</dependency>
+<dependency>
+	<groupId>org.mybatis</groupId>
+	<artifactId>mybatis-spring</artifactId>
+	<version>1.3.2</version>
 </dependency>
 <dependency>
     <groupId>cn.pomit</groupId>
@@ -92,11 +110,53 @@ https://search.maven.org/search?q=jpa-mapper ，groupId为cn.pomit。
     <version>2.1</version>
 </dependency>
 ```
-使用@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList;
-调用：
-```
-MapperScanner mapperScanner = new MapperScanner();
-mapperScanner.scanAndRegisterJpaMethod(sqlSessionFactoryList);
+使用@Configuration配置JpaMapper，@Autowired注入List<SqlSessionFactory\> sqlSessionFactoryList,如果存在bean的生成顺序问题，导致SqlSessionFactory注入后并没有mapper信息，需要使用@DependsOn或者@Order（Spring的@Order注解有的时候可能无效，可以将MapperScanner作为bean，使用@Bean注解配合@Order注解使用来调整bean的生成顺序）注解调整JpaMapperConfig的生成顺序;
+
+使用方法：
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.ibatis.binding.MapperRegistry;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+
+import cn.pomit.jpamapper.core.MapperScanner;
+import cn.pomit.jpamapper.core.mapper.register.MappedStatementRegister;
+
+/**
+ * Mapper 配置
+ *
+ * @author cff
+ */
+@Configuration
+public class JpaMapperConfig {
+
+    @Autowired
+    private List<SqlSessionFactory> sqlSessionFactoryList;
+    
+    @PostConstruct
+    public void addPageInterceptor() {
+    	try{
+	        MapperScanner mapperScanner = new MapperScanner();
+	        for (SqlSessionFactory sqlSessionFactory : sqlSessionFactoryList) {
+	        	org.apache.ibatis.session.Configuration configuration = sqlSessionFactory.getConfiguration();
+	        	MapperRegistry mapperRegistry = configuration.getMapperRegistry();
+	        	List<Class<?>> mappers = new ArrayList<>(mapperRegistry.getMappers());
+	        	MappedStatementRegister mappedStatementRegister = new MappedStatementRegister(configuration);
+	        	mappedStatementRegister.addMappers(mappers);
+	        	mapperScanner.addMappedStatementRegister(mappedStatementRegister);
+	        }
+	        
+	        mapperScanner.scanAndRegisterJpaMethod();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+}
 ```
 
 ### Mapper种类
